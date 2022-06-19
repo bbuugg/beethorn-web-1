@@ -85,7 +85,10 @@
                         {{item.content}}
                     </p>
                     <div class="tools">
-                        <span @click="report(item)" class="report">举报</span>
+                        <div class="reply-like">
+                            <span @click="report(item)" class="report">举报</span>
+                            <span  v-if="item.userInfo.id == userInfo.userId" @click="remove(item)" class="report">删除</span>
+                        </div>
                         <div class="reply-like">
                             <div v-if="!item.isAdoption && authorId == userInfo.userId" @click="adoption(item.id,index)" class="reply">
                                 <a-icon class="icon" type="check" />
@@ -215,7 +218,6 @@ export default {
                 )
                 return
             }
-            console.log(res)
             this.total = res.data.total
             this.list = res.data.list != null ? res.data.list : []
             this.loading = false
@@ -350,7 +352,50 @@ export default {
         // ---------- 删除
         report(e){
             this.$Report(e.id,"answer")
-        }
+        },
+        remove(e){
+            if (this.token == null) {
+                this.$Auth("login","登录","快速登录")
+                return
+            }
+            this.$confirm({
+                okText:"确定",
+                cancelText:"取消",
+                title: '正在删除',
+                content: '请注意，您现在正在删除',
+                onOk:() => {
+                    const formData = {
+                        id:e.id,
+                    }
+                    this.postDelete(formData)
+                    return false;
+                },
+                onCancel() {},
+            });
+        },
+        async postDelete(formData){
+            try {
+                const res = await this.$axios.post(api.postAnswerRemove,formData)
+                if (res.code != 1) {
+                    this.$message.error(
+                        res.message,
+                        3
+                    )
+                    return
+                }
+                // this.getData()
+                this.list = this.list.filter((i)=>{
+                    return i.id != formData.id
+                })
+            } catch (error) {
+                setTimeout(() => {
+                    this.$notification.error({
+                        message: '网络错误',
+                        description: "请稍后再试"
+                    })
+                }, 1000)
+            }
+        },
     },
 }
 </script>
@@ -589,6 +634,7 @@ export default {
                 justify-content: space-between;
                 align-items: center;
                 .report{
+                    margin-right: 10px;
                     cursor: pointer;
                     user-select: none;
                     color: #8590a6;

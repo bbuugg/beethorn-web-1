@@ -106,7 +106,11 @@
                         {{item.content}}
                     </p>
                     <div class="tools">
-                        <span @click="report(item)" class="report">举报</span>
+                        <div class="reply-like">
+                            <span @click="report(item)" class="report">举报</span>
+                            <span  v-if="item.userInfo.id == userInfo.userId" @click="remove(item)" class="report">删除</span>
+                        </div>
+                        
                         <div class="reply-like">
                             
                             <div @click="repy(item,item.id)" class="reply">
@@ -234,7 +238,10 @@
                                 {{citem.content}}
                             </p>
                             <div class="tools">
-                                <span class="report" @click="report(citem)">举报</span>
+                                <div class="reply-like">
+                                    <span @click="report(citem)" class="report">举报</span>
+                                    <span  v-if="citem.userInfo.id == userInfo.userId" @click="remove(citem)" class="report">删除</span>
+                                </div>
                                 <div class="reply-like">
                                     <div  @click="repy(citem,item.id)" class="reply">
                                         <a-icon class="icon" type="message" />
@@ -464,8 +471,9 @@ export default {
                 return
             }
             this.total = res.data.total
-            console.log(this.total)
+            
             this.tmpList = res.data.list || []
+            console.log(this.tmpList)
             this.restList(res.data.list)
             this.loading = false
         },
@@ -715,7 +723,51 @@ export default {
         },
         report(e){
             this.$Report(e.id,"comment")
-        }
+        },
+        remove(e){
+            if (this.token == null) {
+                this.$Auth("login","登录","快速登录")
+                return
+            }
+            this.$confirm({
+                okText:"确定",
+                cancelText:"取消",
+                title: '正在删除',
+                content: '请注意，您现在正在删除',
+                onOk:() => {
+                    const formData = {
+                        id:e.id,
+                    }
+                    this.postDelete(formData)
+                    return false;
+                },
+                onCancel() {},
+            });
+        },
+        async postDelete(formData){
+            try {
+                const res = await this.$axios.post(api.postCommentRemove,formData)
+                if (res.code != 1) {
+                    this.$message.error(
+                        res.message,
+                        3
+                    )
+                    return
+                }
+                // this.getData()
+                this.tmpList = this.tmpList.filter((i)=>{
+                    return i.id != formData.id
+                })
+                this.restList(this.tmpList)
+            } catch (error) {
+                setTimeout(() => {
+                    this.$notification.error({
+                        message: '网络错误',
+                        description: "请稍后再试"
+                    })
+                }, 1000)
+            }
+        },
     },
 }
 </script>
@@ -941,7 +993,7 @@ export default {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                .report{
+                .report{ margin-right: 10px;
                     cursor: pointer;
                     user-select: none;
                     color: #8590a6;

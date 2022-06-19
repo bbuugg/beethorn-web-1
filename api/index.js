@@ -157,6 +157,7 @@ const api = {
     postCommentCreate: web + "/comment/create",
     getCommentList: web + "/comment/list",
     postCommentLike: web + "/comment/like",
+    postCommentRemove: web + "/comment/remove",
 
     // -------------------------举报接口
     postReportCreate: web + "/report/create",
