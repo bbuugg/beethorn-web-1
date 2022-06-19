@@ -14,6 +14,10 @@ const api = {
     getSystemSearch: web + "/system/search",
     getSystemEmoji: web + "/system/emoji",
 
+    // -------------------------页面接口
+    getPageInfo: web + "/page/info",
+
+
     // -------------------------autn 接口
     getImageCaptcha: web + "/auth/image/captcha",
     getOption: web + "/auth/option",

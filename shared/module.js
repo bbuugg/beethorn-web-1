@@ -1,6 +1,7 @@
 
 const MODULE = {
     ALL      : "",
+	Page    : "page",
 	USER    : "user",
 	REPORT   :"report",
 	GROUP    : "group",
