@@ -359,14 +359,14 @@ export default {
                 title:this.createForm.title,
                 content:this.createForm.content,
                 type:this.createForm.type,
-                files:"",
+                images:"",
                 groupId:this.createForm.groupInfo.id,
                 hideMode: this.createForm.hideMode,
                 price: this.createForm.price,
             }
             formData.content = formData.content.replace(/\n/g,"<br>");  
             if (this.createForm.imgList.length > 0 && this.createForm.video == null) {
-                formData.files = JSON.stringify(this.createForm.imgList)
+                formData.images = JSON.stringify(this.createForm.imgList)
             }
 
             try {
@@ -392,7 +392,6 @@ export default {
                 this.feedMetaOptions.imgVisible = false
                 this.feedMetaOptions.videoVisible = false
                 this.createForm.titleCount = 0
-                this.createForm.hideContent = []
                 this.createForm.hideMode = 1
                 this.createForm.price = undefined
 

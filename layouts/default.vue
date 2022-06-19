@@ -154,12 +154,10 @@ export default {
         keyword:"",
         openKeys: [],
         selectedKeys: [],
-        list:[],
         timer:null,
       };
     },
     mounted () {
-        this.getData()
         this.updateMenu()
         this.getNotice()
         // this.timer = window.setInterval(() => {
@@ -191,29 +189,6 @@ export default {
           }
           }
           
-        },
-        async getData(){
-          
-            const queryParam = {
-                page:1,
-                limit: 5,
-                cateId: 0,
-                tagId: 0,
-                mode: 1,
-                module:"group"
-            }
-          
-            const res = await this.$axios.get(api.getSystemFilter,{params:queryParam})
-            if (res.code != 1) {
-                this.$router.push(`/404`)
-                this.$message.error(
-                    res.message,
-                    3
-                )
-                return
-            }
-            this.list = res.data.list != null ? res.data.list : []
-           
         },
         toLogin(){
             this.$Auth("login","登录","快速登录")

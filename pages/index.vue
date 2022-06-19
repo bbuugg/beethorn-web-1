@@ -7,7 +7,6 @@
                 :hotGroupList="hotGroupList"
                 @changeMenu="changeMenu"
                 @changeMyGroup="changeMyGroup"
-                @changeHotGroup="changeHotGroup"
             />
             <Right 
                 :hotGroupList="hotGroupList"
@@ -111,7 +110,6 @@ export default {
             this.loading = true
             const res = await this.$axios.get(api.getSystemFilter,{params: this.queryParam}) 
             if (res.code != 1) {
-                this.$router.push(`/404`)
                 this.$message.error(
                     res.message,
                     3
@@ -196,7 +194,7 @@ export default {
                     module: MODULE.GROUP,
                     mode: MODE.HOT,
                     isJoin: true,
-                    userId:this.userInfo.userId
+                    authorId:this.userInfo.userId
                 }
                 const myGroupRes = await this.$axios.get(api.getSystemFilter,{params: myjoinQueryParam}) 
                 if (myGroupRes.code != 1) {
@@ -246,15 +244,15 @@ export default {
             this.getList()
         },
         // 修改小组
-        changeHotGroup(e){
-            this.queryParam.mode = MODE.NEW
+        // changeHotGroup(e){
+        //     this.queryParam.mode = MODE.NEW
      
-            this.list = []
-            this.queryParam.groupId = e
-            this.total = 0
-            this.queryParam.page = 1
-            this.getList()
-        },
+        //     this.list = []
+        //     this.queryParam.groupId = e
+        //     this.total = 0
+        //     this.queryParam.page = 1
+        //     this.getList()
+        // },
         
     },
 

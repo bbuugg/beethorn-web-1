@@ -48,7 +48,7 @@
                     :class="hotGroupId == item.id ? 'group-item active' : 'group-item'">
                         {{item.title}}
                     </li>
-                    <li class="group-item">
+                    <li @click="goMoreGroup" class="group-item">
                         更多
                     </li>
                 </ul>
@@ -100,10 +100,14 @@ export default {
             this.$emit('changeMyGroup',e)
         },
         changeHotGroup(e){
-            this.myGroupId = 0
-            this.hotGroupId = e
-            this.$emit('changeHotGroup',e)
+            // this.myGroupId = 0
+            // this.hotGroupId = e
+            // this.$emit('changeHotGroup',e)
+            this.$router.push(`/group/${e}`)
         },
+        goMoreGroup(){
+            this.$router.push(`/group`)
+        }
     }
 }
 </script>

@@ -21,7 +21,7 @@
                                 <div class="group-stat-count">
                                     <div class="group-stat-content">
                                         <span>帖子:</span>
-                                        <span class="count">{{info.contents | resetNum}}</span>
+                                        <span class="count">{{info.topics | resetNum}}</span>
                                     </div>
                                     <div>
                                         <span>成员:</span>
@@ -34,6 +34,8 @@
                             </div>
                         </div>
                     </div>
+
+                                
                    
                     <div class="group-menu">
                         <ul>
@@ -47,12 +49,8 @@
                     </div>
                     <div v-if="info.isJoin || userInfo.userId == info.userInfo.id" class="group-content-list">
                         <ul v-if="list.length > 0 && list != undefined">
-                            <li v-for="(item,index) in list" :key="index">
-                                <!-- <list-one v-if="item.module == MODULE.ARTICLE || item.module == MODULE.RESOURCE || item.module == 'course'" :info="item"/>
-                                <list-two v-if="item.module == MODULE.VIDEO" :info="item"/>
-                                <list-three v-if="item.module == MODULE.AUDIO" :info="item"/> -->
-                                <list-four v-if="item.module == MODULE.QUESTION" :info="item"/>                      
-                                <list-five v-if="item.module == MODULE.TOPIC" :info="item"/>                      
+                            <li v-for="(item,index) in list" :key="index" class="item">
+                                <FeedItem :info="item"/>                     
                             </li>
                         </ul>
                         <div v-if="list.length < 1 || list == undefined" class="group-content-list-emty">
@@ -82,7 +80,6 @@
                 </a-col>
                 <a-col :span="6" class="group-r">
                     <SidebarUserInfo :info="info.userInfo"/>
-                    <!-- <SidebarHotUserList /> -->
                 </a-col>
             </a-row>
         </div>
@@ -98,12 +95,7 @@ import SidebarGroup from "@/components/sidebar/sidebarGroup"
 import SidebarUserInfo from "@/components/sidebar/sidebarUserInfo"
 import SidebarHotUserList from "@/components/sidebar/sidebarHotUserList"
 
-import ListOne from "@/components/group/ListOne"
-import ListTwo from "@/components/group/ListTwo"
-import ListThree from "@/components/group/ListThree"
-import ListFour from "@/components/group/ListFour"
-import ListFive from "@/components/group/ListFive"
-
+import FeedItem from "@/components/list/feedItem"
 
 import zh_CN from 'ant-design-vue/lib/locale-provider/zh_CN';
 import {MODULE} from "@/shared/module"
@@ -113,11 +105,7 @@ import {MODE} from "@/shared/mode"
 export default {
     name:"groupInfo",
     components:{
-        ListOne,
-        ListTwo,
-        ListThree,
-        ListFour,
-        ListFive,
+        FeedItem,
         SidebarGroupLeftTop,
         SidebarUserInfo,
         SidebarHotUserList,
@@ -154,6 +142,7 @@ export default {
             mode:MODE.HOT,
             groupId:id,
             module:MODULE.TOPIC,
+            isJoin:res.data.info.isJoin,
         }
        
         let list = []
@@ -163,8 +152,8 @@ export default {
 
             if (queryParam.module == MODULE.TOPIC) {
                 list =  list.map((item)=>{
-                    if (item.type == 1 && item.files != "") {
-                        item.files = JSON.parse(item.files)
+                    if (item.type == 1 && item.images != "") {
+                        item.images = JSON.parse(item.images)
                     }
                     return item
                 })
@@ -176,7 +165,7 @@ export default {
             info:res.data.info,
             queryParam,
             list: list,
-            // isShow: list != [] ? false :true,
+            isShow: list != [] ? false :true,
         }
     },
     data(){
@@ -212,7 +201,7 @@ export default {
             if (this.info.isJoin || this.userInfo.userId == this.info.userInfo.id) {
                 const res = await this.$axios.get(api.getGroupPosts,{params: this.queryParam}) 
                 if (res.code != 1) {
-                    this.$router.push(`/404`)
+                    // this.$router.push(`/404`)
                     this.$message.error(
                         res.message,
                         3
@@ -222,8 +211,8 @@ export default {
 
                 if (this.queryParam.module == MODULE.TOPIC) {
                     res.data.list = res.data.list == null ? [] : res.data.list.map((item)=>{
-                        if (item.type == 1 && item.files != "") {
-                            item.files = JSON.parse(item.files)
+                        if (item.type == 1 && item.images != "") {
+                            item.images = JSON.parse(item.images)
                         }
                         return item
                     })
@@ -285,6 +274,8 @@ export default {
                             }
                             return
                         }
+                        this.list = []
+                        this.queryParam.isJoin = this.info.isJoin
                         this.getList()
                     },
                     onCancel() {},
@@ -327,6 +318,8 @@ export default {
                             }
                             return
                         }
+                        this.list = []
+                        this.queryParam.isJoin = this.info.isJoin
                         this.getList()
                     }
                 }).catch((err)=>{
@@ -371,7 +364,9 @@ export default {
                     }
                     return
                 }
-                // this.getList()
+                this.list = []
+                this.queryParam.isJoin = this.info.isJoin
+                this.getList()
                 return
             }
 
@@ -399,6 +394,8 @@ export default {
                 }
                 return
             }
+            this.list = []
+            this.queryParam.isJoin = this.info.isJoin
             this.getList()
         },
     }
@@ -514,111 +511,11 @@ export default {
             }
             .group-content-list{
                 margin-top: 10px;
-                .group-item{
+                .item{
+                    background: white;
                     padding: 10px;
-                    background-color: white;
+                    border-radius: 4px;
                     margin-bottom: 10px;
-                    .user-info{
-                        display: flex;
-                        justify-content: space-between;
-                        .user-info-l{
-                            display: flex;
-                            align-items: center;
-                            margin-right: 10px;
-                            .user-name-box{
-                                .user-name{
-                                    font-size: 14px;
-                                }
-                                .user-meta{
-                                    font-size: 12px;
-                                }
-                                .user-role{
-                                    img{
-                                        max-height: 20px;
-                                        max-width: 20px;
-                                    }
-                                }
-                            }
-                        }
-                        .user-info-r{
-                            .group-meta-date{
-                                height: 20px;
-                                line-height: 20px;
-                                font-size: 12px;
-                                color: #b9b9b9;
-                            }
-                        }
-                    }
-
-                    .group-content-article{
-                        margin: 10px 0;
-                        display: flex;
-                        .group-des-title{
-                            flex: 1;
-                            margin-right: 10px;
-                            h2{
-                                font-size: 18px;
-                                font-weight: bold;
-                            }
-                            p{
-                                margin-top: 5px;
-                                font-size: 15px;
-                                color: #b9b9b9;
-                            }
-
-                        }
-                        
-                        .group-content-cover{
-                            height: 100px;
-                            width: 180px;
-                            border-radius: 8px;
-                            img{
-                                border-radius: 8px;
-                                width: 100%;
-                                height: 100%;
-                            }
-                        }
-                    }
-
-                 
-
-                    .group-meta{
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        .group-meta-l{
-                            display: flex;
-                            position: relative;
-                            .text{
-                                outline: none;
-                                -webkit-tap-highlight-color: rgba(0,0,0,0);
-                                font-family: font-regular,'Helvetica Neue',sans-serif;
-                                border: 1px solid #ccc;
-                                box-sizing: border-box;
-                                margin-right: 10px;
-                                font-size: 12px;
-                                border-radius: 2px;
-                                border: 0;
-                                padding: 0 6px;
-                                background: #f5f5f5;
-                                color: #b9b9b9;
-                                cursor: pointer;
-                                font-weight: 400;
-                                display: flex;
-                                align-items: center;
-                                span{
-                                    padding: 0 3px;
-                                    margin: 0;
-                                }
-                            }
-                            
-                        }
-                        .group-meta-r{
-                            /deep/ .ant-tag{
-                                margin-right: 0;
-                            }
-                        }
-                    }
                 }
                 .group-content-list-emty{
                     background: white;

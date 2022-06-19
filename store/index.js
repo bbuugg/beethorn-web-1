@@ -43,7 +43,7 @@ export const actions = {
         commit("M_UPDATE_BASE",systemInfo.data.info.base)
         commit("M_UPDATE_FILE",systemInfo.data.info.file)
         commit("M_UPDATE_PAY",systemInfo.data.info.pay)
-
+        
         // 初始化token到里面
         let token = $cookies.get("fiber-token") ? $cookies.get("fiber-token") : null
 
@@ -56,12 +56,11 @@ export const actions = {
             //通知消息
             const noticeRes = await $axios.get(api.getNoticeCount)
             commit("notice/M_UPDATE_HAVE_NOTICE",noticeRes.data.info)
-
+            
             // 获取表情列表
             const emojiRes = await $axios.get(api.getSystemEmoji)
             // console.log(emojiRes)
             commit("M_UPDATE_EMOJI",emojiRes.data.list)
-           
         }
     },
     A_UPDATE_BASE_THEME({commit},theme){
