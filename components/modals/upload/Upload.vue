@@ -14,44 +14,75 @@
             <div class="upload_file_content">
                 <div  class="upload_file_content_box">
                     <a-upload-dragger
+                        :fileList="[]"
                         name="file"
-                        :customRequest="uploadFlie"
-                        :showUploadList="false"
+                        :multiple="false"
+                        :customRequest="onFileAdded"
                     >
                         <p class="ant-upload-drag-icon">
                         <a-icon type="inbox" />
                         </p>
                         <p class="ant-upload-text">
-                            点击或者拖入文件到此处
+                            点击或者拖拽文件进来
+                        </p>
+                        <p class="ant-upload-hint">
+                            目前只支持单文件上传。。
                         </p>
                     </a-upload-dragger>
-                    <!-- <div class="hash-percentage" v-if="status == 'hash'"> 
-                        <span>正在计算文件内容请不要关闭窗口</span>
-                    </div> -->
-                    <!-- <div v-if="status == 'uploading'">
-                        <a-progress 
-                        :percent="fakeUploadPercentage" status="active" />
-                       
-                    </div> -->
+                </div>
+                <div class="file_progress" v-if="fileList.length > 0">
+                    <div class="file_progress_box" :style="`transform: translateX(-${progress}%);`"></div>
+                    <div class="file_info">
+                        <a-icon v-if="mediaType == 'Image'" class="file_info_icon" type="file-image" />
+                        <a-icon v-if="mediaType == 'Audio'" class="file_info_icon" type="file-unknown" />
+                        <a-icon v-if="mediaType == 'Video'" class="file_info_icon" type="file-unknown" />
+                        <a-icon v-if="mediaType == 'Other'" class="file_info_icon" type="file-unknown" />
+                        <div class="file_text">
+                            <div class="file_name">
+                                {{fileList[0].name}}
+                            </div>
+                            <div class="file_size">
+                                {{fileList[0].size | resetSize}}
+                            </div>
+                            <div class="file_name">
+                                {{fileList[0].loadingText}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 </template>
 
 <script>
-import api from "@/api/index"
+import api from '@/api/index'
 import { mapState } from "vuex"
 export default {
+     filters: {
+        resetSize: function(v){
+            let tmp = v / 1024
+            if (tmp < 1024) {
+                return tmp.toFixed(2) + "kb"
+            }
+            if (tmp >= 1024) {
+                return (tmp / 1024).toFixed(2) + "mb"
+            }
+        }
+    },
     data() {
         return {
-            mediaSize:1000, // 文件大小
+            minFileSize:1000, // 文件大小
+            bigFileSize:1000, // 文件大小
             mediaType:null,
-            imageType:[], // 图片类型
-            audioType:[], // 图片类型
-            videoType:[], // 图片类型
+            imageType:[".png",".jpg",".gif",".jpeg"], // 图片类型
+            audioType:[".mp3",".wav"], // 图片类型
+            videoType:[".mp4"], // 图片类型
+            otherType:[".crt"], // 其他类型
+
+            fileList:[],
+            progress:0,
+            chunkSize: 1024*1024*2,
 
             activeLink: null,
             isTrue: false,
@@ -59,20 +90,24 @@ export default {
         };
     },
     computed:{
-        ...mapState(["file"])
+        ...mapState(["file"]),
+        ...mapState("user",["token","userInfo"]),
     },
     methods: {
         async confirm(
             mediaType
         ) {
-            this.open();
+           
             this.mediaType = mediaType || "Image"
             this.imageType = this.file.imageType
             this.audioType = this.file.audioType
             this.videoType = this.file.videoType
-            this.mediaSize = this.file.fileSize
-            // this.queryParam.ext = this.mediaType
+            this.otherType = this.file.otherType
+            this.minFileSize = this.file.minFileSize
+            this.bigFileSize = this.file.bigFileSize
+            
   
+            this.open();
             return new Promise((resolve, reject) => {
                 const target = { state: 'prepare'};
                 const that = this
@@ -89,24 +124,41 @@ export default {
                 this.state = res;
             });
         },
-        async uploadFlie(file){
-            if (!file) return;
+        async onFileAdded(antfile) { 
+            // 文件上传前的校验
+            if (!antfile) return;
+            // console.log(antfile)
+            const file = antfile.file
+            this.fileList.push({
+                name:file.name,
+                size:file.size,
+                loadingText:"校验文件中"
+            })
+            console.log(file.size < this.minFileSize *1204*1024)
+            // 如果文件尺寸小于后台设置并且小于5m则用普通上传
+            if (file.size < this.minFileSize *1204*1024) {
+                // 这里用普通上传方式
+                this.fileList[0].loadingText = "这里采用普通上传"
+                this.uploadMinFile(file)
+                return
+            }
 
-            //  
-            if ((this.mediaSize * 1024 * 1024) < file.file.size) {
+            
+            if ((this.bigFileSize * 1024 * 1024) < file.size) {
                 this.$message.error(
                     "文件太大了",
                     3
                 )
-                return false
+                return
             }
-            
-            const type = this.$getType(file.file.name)
+           
+            const type = this.$getType(file.name)
             if (this.mediaType === "Image" && this.imageType.indexOf(type) == -1 ) {
                 this.$message.error(
                     "文件类型不正确",
                     3
                 )
+                 
                 return
             }
             if (this.mediaType === "Audio" && this.audioType.indexOf(type) == -1 ) {
@@ -114,6 +166,7 @@ export default {
                     "文件类型不正确",
                     3
                 )
+                
                 return
             }
             if (this.mediaType === "Video" && this.videoType.indexOf(type) == -1 ) {
@@ -121,25 +174,169 @@ export default {
                     "文件类型不正确",
                     3
                 )
+                
+                return
+            }
+            if (this.mediaType === "Other" && this.otherType.indexOf(type) == -1 ) {
+                this.$message.error(
+                    "文件类型不正确",
+                    3
+                )
+                
                 return
             }
 
-            let formData = new FormData();
-            formData.append("file", file.file);
+            
+           
+            this.fileList[0].loadingText = "正在加密文件内容"
+            
+            // 获取分片个数
+            const chunkCount = Math.ceil(file.size / this.chunkSize)
+            
+            // 获取md5
+            const now = new Date();
+            const nowStr = format(now, 'yyyy-MM-dd');
+            const fileMd5str = file.size + file.name + this.userInfo.nickName + this.userInfo.userId + nowStr
+       
+           
+            // 向后端查询验证切片上传
+            const verifyChunkFormData = {
+                identifier:fileMd5
+            }
+            const verifyChunkRes = await this.$axios.get(api.UploadChunk, {params: verifyChunkFormData})
+            
 
-            const res = await this.$axios.post(api.postuploadFile,formData)
-            if (res.code != 1 ) {
-                this.$message.error(
-                    res.message,
+            if (verifyChunkRes.code != 1) {
+                this.fileList[0].loadingText = "验证文件加密内容错误"
+                 this.$message.error(
+                    verifyChunkRes.message,
                     3
                 )
                 return
             }
-            this.activeLink = res.data.link[0]
-            this.ascertain()
-            return
+            
+            let chunkResultList = verifyChunkRes.data.result
+            // 已上传未合并直接请求合并
+            if (chunkResultList.length == chunkCount) {
+                this.fileList[0].loadingText = "文件秒传"
+                this.mergeChunk(file.name,fileMd5,file.size)
+                return
+            }
+            // 已上传部分切片,继续上传遗留切片
+            if (chunkResultList.length != chunkCount && chunkResultList.length > 0) {
+                this.fileList[0].loadingText = "文件断点续传"
+
+                let uploadedChunks = [];
+
+                for (let i = 0; i < chunkCount; i++) {
+                    
+                    //分片开始位置
+                    let start = i * this.chunkSize
+                    let end = Math.min(file.size,start + this.chunkSize)
+
+                    let _chunkFile = file.slice(start,end)
+                
+
+                    let formData = new FormData()
+                    formData.append("identifier",fileMd5)
+                    formData.append("chunkNumber",i)
+                    formData.append("totalChunks",chunkCount)
+                    formData.append("file",_chunkFile)
+
+                    uploadedChunks.push(formData)
+                }
+                // 需求 根据arr 里面的数据 移除 arrobj 里面对应下标数据返回一个新数组
+                chunkResultList.forEach((item)=>{
+                    uploadedChunks[item] = undefined
+                })
+
+                uploadedChunks = uploadedChunks.filter((item)=>{
+                    return item != undefined
+                })
+
+                for (let index = 0; index < uploadedChunks.length; index++) {
+                   await this.$axios.post(api.UploadChunk, uploadedChunks[index])
+                }
+                this.mergeChunk(file.name,fileMd5,file.size)
+              
+                return
+            }
+            
+           
+            this.fileList[0].loadingText = "文件正在上传"
+
+            for (let i = 0; i < chunkCount; i++) {
+                
+                //分片开始位置
+                let start = i * this.chunkSize
+                let end = Math.min(file.size,start + this.chunkSize)
+
+              
+                let _chunkFile = file.slice(start,end)
+           
+
+
+                let formData = new FormData()
+                formData.append("identifier",fileMd5)
+                formData.append("chunkNumber",i)
+                formData.append("totalChunks",chunkCount)
+                formData.append("file",_chunkFile)
+
+
+                await this.$axios.post(api.UploadChunk, formData)
+                this.progress =  Math.round((((i + 1) / chunkCount) * 100) - 1)
+            }
+
+            //合并分片 所有上传结束通知后端进行合并分片
+            this.mergeChunk(file.name,fileMd5,file.size)
+            
         },
 
+        async mergeChunk(fileName, identifier, size){
+            const mergeRes = await this.$axios.post(api.mergeChunk, {
+                fileName: fileName,
+                identifier: identifier,
+                size: size,
+            })
+            if (mergeRes.code != 1) {
+                this.$message.error(
+                    mergeRes.error,
+                    3
+                )
+                this.fileList[0].loadingText = "文件成功失败"
+                return
+            }
+            this.progress = 100
+            this.fileList[0].loadingText = "文件成功上传"
+            this.activeLink = mergeRes.data.link[0]
+            this.ascertain()
+        },
+
+        async uploadMinFile(file){
+            const formData = new FormData()
+            formData.append("file",file)
+            const res =  await this.$axios({
+                url: api.postuploadFile,
+                method: 'post',
+                data: formData,
+                onUploadProgress:(progressEvent)=>{
+                    let complete = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%'
+                    this.progress = complete
+                }
+            })
+            if (res.code != 1) {
+                this.$message.error(
+                    res.error,
+                    3
+                )
+                this.fileList[0].loadingText = "文件成功失败"
+                return
+            }
+            this.progress = 100
+            this.fileList[0].loadingText = "文件成功上传"
+            this.activeLink = res.data.link[0]
+            this.ascertain()
+        },
         cancel(){
             this.state.state = "cancel"
             this.activeLink = null
@@ -149,6 +346,8 @@ export default {
             this.state.state = "ascertain"
             this.close()
             this.activeLink = null
+            this.fileList = []
+            this.progress = 0
         },
         open() {
             this.isTrue = true;
@@ -182,14 +381,13 @@ export default {
         justify-content: center;
         .upload_file_container{
             background-color: #fff;
-            width: 22rem;
+            width: 33rem;
             margin: 0 auto;
             position: relative;
             background-image: url("/img/login.png");
             background-repeat: no-repeat;
             background-size: 100%;
             margin-top: -9%;
-
             .upload_file_title{
                 font-size: 13px;
                 display: flex;
@@ -221,63 +419,36 @@ export default {
                 padding: 20px 20px;
                 .upload_file_content_box{
                     width: 100%;
-                    height: 200px;
-                    .hash-percentage{
-                        margin: 10px 0;
-                    }
                 }
-
-                .upload_file_content_list{
-                    
-                    ul{
+                .file_progress{
+                    margin-top: 10px;
+                    position: relative;
+                    overflow: hidden;
+                    .file_info{
+                        position: relative;
+                        z-index: 1;
+                        height: 50px;
                         display: flex;
-                        flex-flow: wrap;
-                        overflow-y: auto;
-                        max-height: 326px;
-                        li{
-                            width: 50%;
-                            border: 1px solid #fff;
-                            position: relative;
-                            cursor: pointer;
-                            .editor_image{
-                                height: 0;
-                                padding-top: 60%;
-                                position: relative;
-                                background-color: #f5f5f5;
-                                video{
-                                    position: absolute;
-                                    height: 100%;
-                                    width: 100%;
-                                    top: 0;
-                                    left: 0;
-                                }
+                        align-items: center;
+                        padding: 0 20px;
+                        .file_info_icon{
+                            font-size: 30px;
+                        }
+                        .file_text{
+                            flex: 1;
+                            display: flex;
+                            justify-content: flex-end;
+                            .file_size{
+                                margin: 0 20px;
                             }
                         }
-                        .picked::after{
-                            content: '✓';
-                            position: absolute;
-                            width: 20px;
-                            height: 20px;
-                            background: #f44336;
-                            color: #fff;
-                            top: 5px;
-                            right: 5px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            border-radius: 100%;
-                            border: 1px solid #fff;
-                        }
                     }
-                    .upload_file_content_list_pagination{
-                        margin-top: 20px;
-                        display: flex;
-                        justify-content: flex-end;
-                    }
-                    .upload_file_content_list_ok{
-                        margin-top: 20px;
-                        display: flex;
-                        justify-content: flex-end;
+                    .file_progress_box{
+                        position: absolute;
+                        height: 50px;
+                        width: 100%;
+                        background-color: #e2eeff;
+                        transform: translateX(-100%);
                     }
                 }
             }

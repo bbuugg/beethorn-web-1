@@ -45,9 +45,9 @@ export const actions = {
         commit("M_UPDATE_PAY",systemInfo.data.info.pay)
         
         // 初始化token到里面
-        let token = $cookies.get("fiber-token") ? $cookies.get("fiber-token") : null
+        let token = $cookies.get("Beethorn-token") ? $cookies.get("Beethorn-token") : null
 
-        
+            
         commit("user/M_UPDATE_TOKEN",token)
         if (token != null) {
             const res = await $axios.get(api.getAccountInfo)

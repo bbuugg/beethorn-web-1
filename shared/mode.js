@@ -12,8 +12,15 @@ const HIDEMODE = {
     LOGIN:3, // 登录
 }
 
+
+const LOGINMODE = {
+    CODE:1, // 验证码登录
+    PASS:2, // 密码登录
+}
+
 export {
     MODE,
+    LOGINMODE,
     HIDEMODE
 }
 

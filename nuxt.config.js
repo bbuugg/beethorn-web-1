@@ -102,7 +102,6 @@ export default {
     { src: '@/plugins/modals/resource', ssr: false },
     { src: '@/plugins/modals/auth', ssr: false },
     { src: '@/plugins/modals/cash', ssr: false },
-    { src: '@/plugins/modals/code', ssr: false },
     { src: '@/plugins/modals/pay', ssr: false },
     { src: '@/plugins/modals/upload', ssr: false },
     { src: '@/plugins/modals/payQr', ssr: false },

@@ -50,11 +50,11 @@
                       发现
                     </nuxt-link>
                   </li>
-                  <li class="item">
+                  <!-- <li class="item">
                     <nuxt-link :class="selectedKeys[0] == '/home' ? 'active' : ''" class="link" :to="`/feed`">
                       社区
                     </nuxt-link>
-                  </li>
+                  </li> -->
                 </ul>
               </div>
               <div class="user-search">

@@ -6,57 +6,45 @@
             <a-row>
                 <a-col :md="24" :span="24" class="login_right">
                     <!-- 标题 -->
-                    <h2>{{title}}</h2>
-                    <!-- 登录框 -->
-                    <a-form-model v-show="type == 'login'" ref="loginForm" :model="loginForm" :rules="loginForm.rules" class="login_input">
-                        <a-form-model-item ref="account" prop="account">
-                            <a-input size="large" v-model="loginForm.account" placeholder="输入用户账号">
-                                <a-icon slot="prefix" type="user" />
-                            </a-input>
-                        </a-form-model-item>
-                        <a-form-model-item ref="password" prop="password">
-                           <a-input-password @pressEnter="onSubmit" size="large" v-model="loginForm.password" placeholder="密码" />
-                        </a-form-model-item>
-                        <div class="login_register">
-                            <p class="forget">
-                                忘记密码
-                            </p>
-                            <p>
-                                新用户？<span @click="goRegister" class="go_register">注册</span>
-                            </p>
-                        </div>
-                    </a-form-model>
+                    <h2>登录</h2>
+    
                     <!-- 注册框 -->
-                    <a-form-model v-show="type == 'register'" ref="registerForm" :model="registerForm" :rules="registerForm.rules" class="register_input">
+                    <a-form-model 
+                    ref="loginForm" 
+                    :model="loginForm" 
+                    :rules="loginForm.rules" class="register_input">
                         <a-form-model-item  
                             ref="account" 
                             prop="account">
-                            <a-input size="large" v-model="registerForm.account" 
-                            :placeholder="config.registerMode == 'email'?'请输入邮箱':'请输入手机号'">
+                            <a-input size="large" v-model="loginForm.account" 
+                            :placeholder="config.loginRegisterMode == 'email'?'请输入邮箱':'请输入手机号'">
                                 <a-icon slot="prefix" type="user" />
                             </a-input>
                         </a-form-model-item>
-                        <a-form-model-item ref="captcha" prop="captcha">
+                        <a-form-model-item v-if="loginForm.mode == LOGINMODE.CODE" ref="code" prop="code">
                             <div class="code">
-                                <a-input :maxLength="6" class="code_input" size="large" v-model="registerForm.captcha" placeholder="验证码" />
-                                <a-button  type="primary" @click="sendCode" :disabled="!registerForm.show">
-                                    {{registerForm.content}}
+                                <a-input :maxLength="6" class="code_input" size="large" v-model="loginForm.code" placeholder="验证码" />
+                                <a-button size="large"  type="primary" @click="sendCode" :disabled="!loginForm.show">
+                                    {{loginForm.content}}
                                 </a-button>
                             </div>
                         </a-form-model-item>
-                        <a-form-model-item ref="password" prop="password">
-                            <a-input-password size="large" v-model="registerForm.password" placeholder="密码" />
+                        <a-form-model-item v-if="loginForm.mode == LOGINMODE.PASS" ref="password" prop="password">
+                            <a-input-password size="large" v-model="loginForm.password" placeholder="密码" />
                         </a-form-model-item>
-                        <div class="go_login" @click="goLogin">
-                            已有账号？登录
+                        <div v-if="loginForm.mode == LOGINMODE.CODE" class="go_login" @click="changeLoginMode(LOGINMODE.PASS)">
+                            密码登录
+                        </div>
+                        <div v-if="loginForm.mode == LOGINMODE.PASS" class="go_login" @click="changeLoginMode(LOGINMODE.CODE)">
+                            验证码登录
                         </div>
                     </a-form-model>
                     
                     <a-button @click="onSubmit" size="large" type="primary" block>
-                        {{btnTitle}}
+                        立即登录
                     </a-button>
                     <!-- 社交登录 -->
-                    <div v-if="type == 'login' && config.social.length > 0" class="login_open">
+                    <div v-if="config.social.length > 0" class="login_open">
                         <div class="login_open_title">社交登录:</div>
                         <ul class="login_open_ul">
                             <li class="wechat">
@@ -71,7 +59,7 @@
                     </div>
 
                     <!-- 协议 -->
-                    <div v-if="type == 'register'" class="register_proxy">
+                    <div  class="register_proxy">
                         <span>
                             注册登录即表示同意
                             <a href="/" target="_blank"><span>用户协议</span></a>
@@ -88,40 +76,25 @@
 <script>
 import {mapActions} from "vuex"
 import api from "@/api/index"
-// import wsConnection from "@/service/websocket" 
-// import router from '../../router'
+import {LOGINMODE} from "@/shared/mode"
 export default {
     data() {
         return {
-            type:"login",
-            title:"登录",
-            btnTitle:"快速登录",
-            // 登录输入框
+            LOGINMODE,
             loginForm:{
-                account:null,
-                password:null,
-                rules:{
-                    account:[
-                        { required: true, message: ' 请输入账户', trigger: 'change' },
-                    ],
-                    password:[
-                        { required: true, message: '请输入密码', trigger: 'change' },
-                    ],
-                },
-            },
-            registerForm:{
                 show: true,
                 count: 0,
                 content: "发送验证码",
                 timer: null,
                 account:null,
-                captcha:null,
+                mode: LOGINMODE.CODE,
+                code:null,
                 password:null,
                 rules:{
                     account:[
                         // { required: true, message: '请输入邮箱', trigger: 'blur' },
                     ],
-                    captcha:[
+                    code:[
                         { required: true, message: '请输入验证码', trigger: 'change' },
                     ],
                     password:[
@@ -133,7 +106,7 @@ export default {
             // registerType: 0 email, 1 telephone
             registerType: 0,
             config: {
-                registerMode: "",
+                loginRegisterMode: "",
                 policyUrl: "",
                 protocolUrl: "",
                 social: ""
@@ -145,28 +118,21 @@ export default {
     methods: {
         ...mapActions("user",["A_UPDATE_USER","A_UPDATE_TOKEN"]),
         // ...mapActions("auth",["SendCaptcha","RegisterConfig","ToRegister","ToLogin"]),
-        async confirm(
-            type = "login",
-            title = "登录",
-            btnTitle = "快速登录"
-        ) {
-            this.type = type || this.type;
-            this.title = title || this.title;
-            this.btnTitle = btnTitle || this.btnTitle;
+        async confirm() {
 
             const res = await this.$axios.get(api.getOption)     
-            this.config.registerMode=res.data.info.registerMode
+            this.config.loginRegisterMode=res.data.info.loginRegisterMode
             this.config.policyUrl=res.data.info.policyUrl
             this.config.protocolUrl=res.data.info.protocolUrl
             this.config.social= res.data.info.social
 
-            if (res.data.info.registerMode == "email") {
-                this.registerForm.rules.account.push({
+            if (res.data.info.loginRegisterMode == "email") {
+                this.loginForm.rules.account.push({
                     pattern:/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/,
                     message: '请输入邮箱', trigger: 'blur'
                 })
             }else{
-                this.registerForm.rules.account.push({
+                this.loginForm.rules.account.push({
                     pattern:/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/,
                     message: '请输入手机号', trigger: 'blur'
                 })
@@ -189,100 +155,20 @@ export default {
                 this.state = res;
             });
         },
+        changeLoginMode(e){
+            this.loginForm.mode = e
+        },
         onSubmit(){
-            switch(this.type) {
-                case "register":
-                    this.postRegister()
-                    break;
-                case "login":
-                    this.postLogin()
-                    break;
-                case "forget":
-                    console.log("忘记密码")
-                    break;
-            } 
-        },
-        sendCode(){
-            this.$refs.registerForm.validateField("account",async (err)=>{
-                if (err != "") {
-                    return false
-                }
-                this.$Code(this.registerForm.account).then((res)=>{
-                    if (res != false) {
-                        const TIME_COUNT = 60;
-                        if (!this.timer) {
-                        this.registerForm.count = TIME_COUNT;
-                        this.registerForm.show = false;
-                        this.registerForm.timer = setInterval(() => {
-                            if (this.registerForm.count > 0 && this.registerForm.count <= TIME_COUNT) {
-                                this.registerForm.count--;
-                                this.registerForm.content = `${this.registerForm.count}秒后重发`
-                                } else {
-                                this.registerForm.show = true;
-                                this.registerForm.content = "发送验证码"
-                                clearInterval(this.registerForm.timer);
-                                this.registerForm.timer = null;
-                                }
-                            }, 1000)
-                        }
-                    }
-                }).catch((err)=>{
-                    console.log(err)
-                })
-            })
-        },
-        postRegister(){
-             this.$refs.registerForm.validate(async (valid) => {
-                try {
-                    
-                    if (!valid) {
-                        return false;
-                    } 
-
-                    const formData = {
-                        account: this.registerForm.account,
-                        captcha: this.registerForm.captcha,
-                        password: this.registerForm.password
-                    }
-                    
-                    const res = await this.$axios.post(api.postRegister,formData)
-                    console.log(res)
-                    if (res.code != 1) {
-                        this.$message.error(
-                            res.message,
-                            3
-                        )
-                        return
-                    }
-                   
-                    this.loginForm.account = this.registerForm.account
-                    this.loginForm.password = this.registerForm.password
-                    
-                    this.registerForm.account = null  
-                    this.registerForm.captcha = null
-                    this.registerForm.password = null
-               
-                    this.goLogin()
-                } catch (error) {
-                    console.log(error)
-                    setTimeout(() => {
-                        this.$notification.error({
-                            message: '网络错误',
-                            description: "请稍后再试"
-                        })
-                    }, 1000)
-                }
-            });
-        },
-        postLogin(){
-             this.$refs.loginForm.validate(async (valid) => {
+            this.$refs.loginForm.validate(async (valid) => {
                 try {
                     if (!valid) {
                         return false;
                     } 
                     const formData = {
                         "account":this.loginForm.account,
-                        "password" : this.loginForm.password
+                        "password" : this.loginForm.password,
+                        "code":this.loginForm.code,
+                        "mode":this.loginForm.mode,
                     }  
                     const {code,message,data} = await this.$axios.post(api.postLogin,formData)
              
@@ -301,7 +187,8 @@ export default {
                     this.A_UPDATE_USER(res.data.info)
                     this.loginForm.account = null
                     this.loginForm.password = null
-                    this.$cookies.set("fiber-token",data.token,{
+                    this.loginForm.code = null
+                    this.$cookies.set("Beethorn-token",data.token,{
                         maxAge: 60 * 60 * 24 * 7,
                         path: '/'
                     })
@@ -321,18 +208,43 @@ export default {
                 }
             });
         },
-        // 切换注册
-        goRegister(){
-            this.type = "register"
-            this.title = "用户注册"
-            this.btnTitle = "立即注册"
+        sendCode(){
+            this.$refs.loginForm.validateField("account",async (err)=>{
+                if (err != "") {
+                    return false
+                }
+                const TIME_COUNT = 60;
+                if (!this.timer) {
+                this.loginForm.count = TIME_COUNT;
+                this.loginForm.show = false;
+                this.loginForm.timer = setInterval(() => {
+                    if (this.loginForm.count > 0 && this.loginForm.count <= TIME_COUNT) {
+                            this.loginForm.count--;
+                            this.loginForm.content = `${this.loginForm.count}秒后重发`
+                        } else {
+                            this.loginForm.show = true;
+                            this.loginForm.content = "发送验证码"
+                            clearInterval(this.loginForm.timer);
+                            this.loginForm.timer = null;
+                        }
+                    }, 1000)
+                }
+
+                const formData = {
+                    account:this.loginForm.account,
+                }
+                const res = await this.$axios.post(api.sendCaptcha,formData)
+                if (res.code != 1) {
+                    this.$message.error(
+                        res.message,
+                        3
+                    )
+                    return
+                }
+                
+            })
         },
-        // 切换登录
-        goLogin(){
-            this.type = "login"
-            this.title = "登录"
-            this.btnTitle = "快速登录"
-        },
+
         cancel(){
             this.state.state = "cancel"
             this.close()
@@ -384,17 +296,6 @@ export default {
             z-index: 22;
             cursor: pointer;
         }
-        // .login_left{
-        //     .logo{
-        //         width: 100%;
-        //         height: 100%;
-               
-        //         img{
-        //             width: 100%;
-        //             height: 100%;
-        //         }
-        //     }
-        // }
         .login_right{
             padding: 30px 24px 24px;
             background-image: url("/img/login.png");

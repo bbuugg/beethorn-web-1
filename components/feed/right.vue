@@ -102,9 +102,14 @@
                         <p>最多上传9张图片</p>
                         <ul>
                             <li v-for="(item,index) in createForm.imgList" :key="index">
-                                <div>
+                                <div class="image-box">
                                     <img :src="item" alt="xxx">
-                                    <b @click="removeImg(index)" class="group-img-close"><a-icon type="close" /></b>
+                                    <b @click="removeImg(index)" class="img-close"><a-icon type="close" /></b>
+                                </div>
+                            </li>
+                            <li v-if="createForm.imgList.length < 9">
+                                <div class="add-image" @click="selectImg">
+                                    <a-icon class="icon" type="plus" />
                                 </div>
                             </li>
                         </ul>
@@ -714,7 +719,21 @@ export default {
                             width: 16.6666666%;
                             padding: 5px;
                             position: relative;
-                            div{
+                            .add-image{
+                                cursor: pointer;
+                                box-shadow: inset 0 0 2px rgb(137, 137, 137);
+                                border-radius: 2px;
+                                height: 100%;
+                                width: 100%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                .icon{
+                                    color: rgb(137, 137, 137);
+                                    font-size: 30px;
+                                }
+                            }
+                            .image-box{
                                 height: 0;
                                 padding-top: 100%;
                                 position: relative;
@@ -729,10 +748,10 @@ export default {
                                     top: 0;
                                     width: 100%;
                                     height: 100%;
-                                    box-shadow: inset 0 0 1px rgb(137, 137, 137);
+                                    box-shadow: inset 0 0 2px rgb(137, 137, 137);
                                     border-radius: 2px;
                                 }
-                                .group-img-close{
+                                .img-close{
                                     position: absolute;
                                     right: 0;
                                     top: 9px;

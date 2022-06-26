@@ -5,7 +5,7 @@ import Vue from 'vue'
 import uploader from 'vue-simple-uploader'
 Vue.use(uploader)
 
-import Upload from '@/components/modals/upload/xUpload'
+import Upload from '@/components/modals/upload/Upload'
 
 export default ({store,app: { $axios,$cookies}}) => {
     let instance

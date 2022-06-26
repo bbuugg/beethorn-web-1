@@ -27,7 +27,7 @@ const api = {
     postLogout: web + '/auth/logout',// 用户登出
 
     // -------------------------媒体 接口
-    postuploadFile: web + "/upload",
+    postuploadFile: web + "/upload/minFile",
     UploadChunk:  web +"/upload/chunk",
     mergeChunk:  web +"/upload/mergeChunk",
 

@@ -238,6 +238,7 @@ export default {
             this.queryParam.mode = MODE.NEW
 
             this.list = []
+            this.queryParam.isJoin = true
             this.queryParam.groupId = e
             this.total = 0
             this.queryParam.page = 1

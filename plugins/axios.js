@@ -11,7 +11,7 @@ export default function ({store, $axios,app: { $cookies },redirect})  {
 	$axios.onRequest(config => {
         if(process.server){
             // 获取服务端的token
-            let token = $cookies.get("fiber-token") ? $cookies.get("fiber-token") : null
+            let token = $cookies.get("Beethorn-token") ? $cookies.get("Beethorn-token") : null
             if (token != undefined || token != null || token != "") {
                 config.headers['Authorization'] = `Bearer ${token}` 
             }
