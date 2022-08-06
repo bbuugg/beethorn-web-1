@@ -50,7 +50,7 @@
                         </div>
                         <span class="text">发布</span>
                     </div>
-                    <div class="create-top-r">
+                    <!-- <div class="create-top-r">
                         <div @click="changeType(1)" :class="createForm.type == 1 ? 'btn mrt10 active' : 'btn mrt10'">
                             <a-icon type="bug" />
                             <span>
@@ -63,7 +63,7 @@
                                 提问
                             </span>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="create-title">
                     <a-input

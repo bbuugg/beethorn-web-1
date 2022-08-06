@@ -42,14 +42,14 @@ import Popover from 'ant-design-vue/lib/popover'
 import Result  from 'ant-design-vue/lib/result'
 import Skeleton  from 'ant-design-vue/lib/skeleton'
 import Anchor  from 'ant-design-vue/lib/anchor'
-
+import Descriptions  from 'ant-design-vue/lib/descriptions'
 
 
 import Modal from 'ant-design-vue/lib/modal'
 import message from 'ant-design-vue/lib/message'
 import notification from 'ant-design-vue/lib/notification'
 
-
+Vue.use(Descriptions)
 Vue.use(Tree)
 Vue.use(Anchor)
 Vue.use(Popover)

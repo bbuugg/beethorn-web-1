@@ -58,6 +58,7 @@
 <script>
 import api from '@/api/index'
 import { mapState } from "vuex"
+import { format } from "date-fns"
 export default {
      filters: {
         resetSize: function(v){
@@ -134,7 +135,7 @@ export default {
                 size:file.size,
                 loadingText:"校验文件中"
             })
-            console.log(file.size < this.minFileSize *1204*1024)
+            
             // 如果文件尺寸小于后台设置并且小于5m则用普通上传
             if (file.size < this.minFileSize *1204*1024) {
                 // 这里用普通上传方式
@@ -197,7 +198,8 @@ export default {
             const now = new Date();
             const nowStr = format(now, 'yyyy-MM-dd');
             const fileMd5str = file.size + file.name + this.userInfo.nickName + this.userInfo.userId + nowStr
-       
+            const fileMd5 = this.$hex_md5(fileMd5str)
+         
            
             // 向后端查询验证切片上传
             const verifyChunkFormData = {

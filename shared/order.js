@@ -1,13 +1,12 @@
 const ORDERTYPE = {
-    CZ:1,
-    CD:2,
-    BUYZY:3,
-    VIEWFEED:4,
-    JOINGROUP:5,
-    JOINCOURSE:6,
-    VIEWANSWER:7,
-    OPENVIP:8,
-    VERIFY:9,
+    CD:2, //打赏
+    BUYZY:3, // 内容购买
+    VIEWFEED:4, // 查看内容
+    JOINGROUP:5, // 加入圈子
+    JOINCOURSE:6, // 加入课程
+    VIEWANSWER:7, // 查看付费答案
+    OPENVIP:8, // 开通vpi
+    VERIFY:9, // 支付认证服务费
 }
 export {
     ORDERTYPE

@@ -36,7 +36,7 @@ export default {
   ** Global CSS
   */
   css: [
-    // '~static/css/animate.min.css',
+    'ant-design-vue/lib/descriptions/style/css',
     'ant-design-vue/lib/anchor/style/css',
     'ant-design-vue/lib/skeleton/style/css',
     'ant-design-vue/lib/result/style/css',
@@ -116,6 +116,7 @@ export default {
     { src: "@/plugins/swipe", ssr: false },
     { src: "@/plugins/clipboard", ssr: false },
     '@/plugins/mixins',
+    '@/plugins/md5',
   ],
   /*
   ** Auto import components

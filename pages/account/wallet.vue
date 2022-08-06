@@ -62,6 +62,13 @@
                         订单明细
                     </button>
                 </li>
+                <li>
+                    <button 
+                        :class="type == 3 ? 'active': ''" 
+                        @click="changeType(3)">
+                        收入明细
+                    </button>
+                </li>
             </ul>
             <div v-if="type == 0" class="wallet-tb">
                 <div class="wallet-select">
@@ -80,53 +87,65 @@
                         </a-select-option>
                     </a-select>
                 </div>
-                <div class="wallet-table">
-                    <a-table 
-                    :pagination="{
-                        pageSize: queryParam.limit,
-                        total:total,
-                    }"
-                    @change="changePage"    
-                    :columns="cashColumn" 
-                    size="middle"  
-                    :data-source="list" 
-                    >
-                        
-                        <span slot="createTime" slot-scope="createTime">{{ createTime | resetData }}</span>
-                        <span slot="status" slot-scope="status">
-                            <a-tag v-if="status ==1" color="#f50">
-                                待审核
-                            </a-tag>
-                            <a-tag v-if="status ==2" color="#87d068">
-                                已打款
-                            </a-tag>
-                            <a-tag v-if="status == 3" color="#87d068">
-                                提现失败
-                            </a-tag>
-                        </span>
-                        <span slot="payMethod" slot-scope="payMethod">
-                            <a-tag v-if="payMethod ==1" color="#2db7f5">
+                <div class="wallet-table" v-if="list.length > 0">
+                    <a-descriptions v-for="(item,index) in list" :key="index" 
+                    class="order-item"
+                    size="small" 
+                    bordered>
+                        <a-descriptions-item label="提现单号">
+                            {{item.code}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="收款方式">
+                            <a-tag v-if="item.payMethod ==1" color="#2db7f5">
                                 支付宝
                             </a-tag>
-                            <a-tag v-if="payMethod ==2" color="#87d068">
+                            <a-tag v-if="item.payMethod ==2" color="#87d068">
                                 微信
                             </a-tag>
-                        </span>
-                        <span slot="serviceMoney" slot-scope="serviceMoney">
-                            {{base.currencySymbol}} {{serviceMoney}}
-                        </span>
-                        <span slot="money" slot-scope="money">
-                            {{base.currencySymbol}} {{money}}
-                        </span>
-                        <span slot="cashMoney" slot-scope="cashMoney">
-                            {{base.currencySymbol}} {{cashMoney}}
-                        </span>
-                        <span slot="action" slot-scope="text, record">
-                            <a @click="viewRemark(record.remark)" v-if="record.status == 3">
-                                查看原因 
-                            </a>
-                        </span>
-                    </a-table>
+                        </a-descriptions-item>
+                        <a-descriptions-item label="可到账金额">
+                            {{base.currencySymbol}} {{item.cashMoney}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="可到账金额">
+                            {{base.currencySymbol}} {{item.money}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="服务费">
+                            {{base.currencySymbol}} {{item.serviceMoney}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="状态">
+                            <a-tag v-if="item.status == 1" color="#f50">
+                                待审核
+                            </a-tag>
+                            <a-tag v-if="item.status == 2" color="#87d068">
+                                已打款
+                            </a-tag>
+                            <a-tag v-if="item.status == 3" color="#87d068">
+                                提现失败
+                            </a-tag>
+                        </a-descriptions-item>
+                        <a-descriptions-item label="时间">
+                            {{item.createTime | resetData}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="被拒原因">
+                            {{item.remark == "" ? "无":item.remark}}
+                        </a-descriptions-item>
+                    </a-descriptions>
+                </div>
+                <div  v-if="list.length ==0 " class="empty">
+                    <a-config-provider :locale="locale">
+                        <a-empty />
+                    </a-config-provider>
+                </div> 
+                <div class="pagination"  v-if="list.length > 0">
+                    <a-config-provider :locale="locale">
+                        <a-pagination
+                             @change="changePage"
+                            :pageSize="queryParam.limit"
+                            :total="total"
+                            show-quick-jumper
+                        >
+                        </a-pagination>
+                    </a-config-provider>
                 </div>
             </div>
             <div v-if="type == 1" class="wallet-recharge">
@@ -146,49 +165,65 @@
                         </a-select-option>
                     </a-select>
                 </div>
-                <div class="wallet-table">
-                    <a-table 
-                    :pagination="{
-                        pageSize: queryParam.limit,
-                        total:total,
-                    }"
-                    @change="changePage"    
-                    :columns="rechargeColumn" 
-                    size="middle"  
-                    :data-source="list" 
-                    >
-                        <span slot="createTime" slot-scope="createTime">{{ createTime | resetData }}</span>
-                        <span slot="status" slot-scope="status">
-                            <a-tag v-if="status == 1" color="#f50">
-                                待审核
-                            </a-tag>
-                            <a-tag v-if="status == 2" color="#2db7f5">
-                                已充值
-                            </a-tag>
-                            <a-tag v-if="status == 3" color="#87d068">
-                                充值失败
-                            </a-tag>
-                        </span>
-                        <span slot="mode" slot-scope="mode">
-                            <a-tag v-if="mode == 1" color="#f50">
+                <div class="wallet-table" v-if="list.length > 0">
+                    <a-descriptions v-for="(item,index) in list" :key="index" 
+                    class="order-item"
+                    size="small" 
+                    bordered>
+                        <a-descriptions-item label="充值单号">
+                            {{item.code}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="充值方式">
+                            <a-tag v-if="item.mode == 1" color="#2db7f5">
                                 支付宝
                             </a-tag>
-                            <a-tag v-if="mode == 2" color="#2db7f5">
+                            <a-tag v-if="item.mode == 2" color="#87d068">
                                 微信
                             </a-tag>
-                            <a-tag v-if="mode == 3" color="#87d068">
+                            <a-tag v-if="item.mode == 3" color="#34a468">
                                 卡密
                             </a-tag>
-                            <a-tag v-if="mode == 4" color="#108ee9">
+                            <a-tag v-if="item.mode == 4" color="#952d88">
                                 人工转账
                             </a-tag>
-                        </span>
-                        <span slot="action" slot-scope="text, record">
-                            <a @click="viewRemark(record.remark)" v-if="record.status == 3">
-                                查看原因 
-                            </a>
-                        </span>
-                    </a-table>
+                        </a-descriptions-item>
+                        <a-descriptions-item label="充值金额">
+                            {{base.currencySymbol}} {{item.money}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="状态">
+                            <a-tag v-if="item.status == 1" color="#f50">
+                                待审核
+                            </a-tag>
+                            <a-tag v-if="item.status == 2" color="#2db7f5">
+                                已充值
+                            </a-tag>
+                            <a-tag v-if="item.status == 3" color="#87d068">
+                                充值失败
+                            </a-tag>
+                        </a-descriptions-item>
+                        <a-descriptions-item label="时间">
+                            {{item.createTime | resetData}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="被拒原因">
+                            {{item.remark == "" ? "无":item.remark}}
+                        </a-descriptions-item>
+                    </a-descriptions>
+                </div>
+                <div  v-if="list.length ==0 " class="empty">
+                    <a-config-provider :locale="locale">
+                        <a-empty />
+                    </a-config-provider>
+                </div> 
+                <div class="pagination"  v-if="list.length > 0">
+                    <a-config-provider :locale="locale">
+                        <a-pagination
+                             @change="changePage"
+                            :pageSize="queryParam.limit"
+                            :total="total"
+                            show-quick-jumper
+                        >
+                        </a-pagination>
+                    </a-config-provider>
                 </div>
             </div>
             <div v-if="type == 2" class="wallet-order">
@@ -225,35 +260,161 @@
                         </a-select-option>
                     </a-select>
                 </div>
-                <div class="wallet-table">
-                    <a-table 
-                    :pagination="{
-                        pageSize: queryParam.limit,
-                        total:total,
-                    }"
-                    @change="changePage"    
-                    :columns="orderColumn" 
-                    size="middle"  
-                    :data-source="list" 
-                    >
-                        <span slot="orderType" slot-scope="orderType">{{ orderType | orderTypeRestTitle }}</span>
-                        <span slot="createTime" slot-scope="createTime">{{ createTime | resetData }}</span>
-                        <span slot="status" slot-scope="status">
-                            <a-tag v-if="status ==1" color="#f50">
+                <div class="wallet-table" v-if="list.length > 0">
+                    <a-descriptions v-for="(item,index) in list" :key="index" 
+                    class="order-item"
+                    size="small" 
+                    bordered>
+                        <a-descriptions-item label="订单号">
+                            {{item.orderNum}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="类型">
+                            <a-tag color="#f50">
+                                {{item.orderType | orderTypeRestTitle}}
+                            </a-tag>
+                        </a-descriptions-item>
+                        <a-descriptions-item label="金额">
+                        {{item.money}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="状态">
+                            <a-tag v-if="item.status == 1" color="#f50">
                                 未支付
                             </a-tag>
-                            <a-tag v-if="status ==2" color="#87d068">
-                                已支付
+                            <a-tag v-if="item.status == 2" color="#87d068">
+                                已付款
                             </a-tag>
-                        </span>
-                        <div slot="money" slot-scope="text,record">
-                            <span v-if="record.isIncome|| record.orderType == 1"><span>+</span>{{record.money}}</span>
-                            <span v-else><span>-</span>{{record.money}}</span>
-                        </div>
-                        <div slot="description" slot-scope="text,record">
-                            <span >{{record.description}}</span>
-                        </div>
-                    </a-table>
+                        </a-descriptions-item>
+                        <a-descriptions-item label="时间">
+                            {{item.createTime | resetData}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="付费内容">
+                            <span v-if="item.orderType == ORDERTYPE.BUYZY">
+                                {{item.detail != null ? `购买资源《${item.detail.title}》` : '无'}}
+                            </span>
+                            <span v-if="item.orderType == ORDERTYPE.VIEWFEED">
+                                {{item.detail != null ? `查看付费帖子《${item.detail.title}》` : '无'}}
+                            </span>
+                            <span v-if="item.orderType == ORDERTYPE.JOINGROUP">
+                                {{item.detail != null ? `加入付费圈子《${item.detail.title}》` : '无'}}
+                            </span>
+                            <span v-if="item.orderType == ORDERTYPE.JOINCOURSE">
+                                {{item.detail != null ? `报名《${item.detail.title}》` : '无'}}
+                            </span>
+                            <span v-if="item.orderType == ORDERTYPE.OPENVIP">
+                                {{item.detail != null ? `开通《${item.detail.title}》` : '无'}}
+                            </span>
+                            <span v-if="item.orderType == ORDERTYPE.VERIFY">
+                                {{item.detail != null ? `支付《${item.detail.title}》` : '无'}}
+                            </span>
+                            <span v-if="item.orderType == ORDERTYPE.CD">
+                                {{item.detail != null ? `给${item.detail.title}打赏` : '无'}}
+                            </span>
+                        </a-descriptions-item>
+                    </a-descriptions>
+                </div>
+                <div  v-if="list.length ==0 " class="empty">
+                    <a-config-provider :locale="locale">
+                        <a-empty />
+                    </a-config-provider>
+                </div> 
+                <div class="pagination" v-if="list.length > 0">
+                    <a-config-provider :locale="locale">
+                        <a-pagination
+                             @change="changePage"
+                            :pageSize="queryParam.limit"
+                            :total="total"
+                            show-quick-jumper
+                        >
+                        </a-pagination>
+                    </a-config-provider>
+                </div>
+            </div>
+            <div v-if="type == 3" class="wallet-order">
+                <div class="wallet-select">
+                    <a-select placeholder="筛选订单类型"  style="width: 220px" @change="changeOrderType">
+                        <a-select-option :value="0">
+                            全部
+                        </a-select-option>
+                        <a-select-option :value="ORDERTYPE.CD">
+                            用户充电打赏
+                        </a-select-option>
+                        <a-select-option :value="ORDERTYPE.BUYZY">
+                            购买内容
+                        </a-select-option>
+                        <a-select-option :value="ORDERTYPE.VIEWFEED">
+                            查看付费内容
+                        </a-select-option>
+                        <a-select-option :value="ORDERTYPE.JOINCOURSE">
+                            加入付费课程
+                        </a-select-option>
+                        <a-select-option :value="ORDERTYPE.JOINGROUP">
+                            加入付费圈子
+                        </a-select-option>
+                    </a-select>
+                </div>
+                <div class="wallet-table" v-if="list.length > 0">
+                    <a-descriptions v-for="(item,index) in list" :key="index" 
+                    class="order-item"
+                    size="small" 
+                    bordered>
+                        <a-descriptions-item label="订单号">
+                            {{item.orderNum}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="类型">
+                            <a-tag color="#f50">
+                                {{item.orderType | orderTypeRestTitle}}
+                            </a-tag>
+                        </a-descriptions-item>
+                        <a-descriptions-item label="金额">
+                         + {{item.money}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="状态">
+                            <a-tag v-if="item.status == 1" color="#f50">
+                                未支付
+                            </a-tag>
+                            <a-tag v-if="item.status == 2" color="#87d068">
+                                已付款
+                            </a-tag>
+                        </a-descriptions-item>
+                        <a-descriptions-item label="时间">
+                            {{item.createTime | resetData}}
+                        </a-descriptions-item>
+                        <a-descriptions-item label="付款者">
+                            <span>
+                                {{(item.detail != null && item.detail.payUser != null) ? item.detail.payUser.nickName : '无'}}
+                            </span>
+                        </a-descriptions-item>
+                        <a-descriptions-item label="付费内容">
+                            <span v-if="item.orderType == ORDERTYPE.BUYZY">
+                                {{(item.detail != null && item.detail.info != null) ? `购买资源《${item.detail.info.title}》` : '无'}}
+                            </span>
+                            <span v-if="item.orderType == ORDERTYPE.VIEWFEED">
+                                {{(item.detail != null && item.detail.info != null) ? `查看付费帖子《${item.detail.info.title}》` : '无'}}
+                            </span>
+                            <span v-if="item.orderType == ORDERTYPE.JOINGROUP">
+                                {{(item.detail != null && item.detail.info != null) ? `加入付费圈子《${item.detail.info.title}》` : '无'}}
+                            </span>
+                            <span v-if="item.orderType == ORDERTYPE.JOINCOURSE">
+                                {{(item.detail != null && item.detail.info != null) ? `报名《${item.detail.info.title}》` : '无'}}
+                            </span>
+                        </a-descriptions-item>
+                    </a-descriptions>
+                </div>
+                <div  v-if="list.length ==0 " class="empty">
+                    <a-config-provider :locale="locale">
+                        <a-empty />
+                    </a-config-provider>
+                </div> 
+                <div class="pagination" v-if="list.length > 0">
+                    <a-config-provider :locale="locale">
+                        <a-pagination
+                             @change="changePage"
+                            :pageSize="queryParam.limit"
+                            :total="total"
+                            show-quick-jumper
+                        >
+                        </a-pagination>
+                    </a-config-provider>
                 </div>
             </div>
         </div>
@@ -264,137 +425,14 @@
 import api from "@/api/index"
 import {ORDERTYPE} from "@/shared/order"
 import { mapState } from "vuex"
-
+import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
 export default {
     middleware: 'auth',
     data(){
         return{
+            locale: zhCN,
             ORDERTYPE,
-            orderColumn:[
-                {
-                    title: '类型',
-                    dataIndex: 'orderType',
-                    key: 'orderType',
-                    scopedSlots: { customRender: 'orderType' },
-                },
-                {
-                    title: '金额',
-                    dataIndex: 'money',
-                    key: 'money',
-                    scopedSlots: { customRender: 'money' },
-                },
-                {
-                    title: '状态',
-                    key: 'status',
-                    dataIndex: 'status',
-                    scopedSlots: { customRender: 'status' },
-                },
-                {
-                    title: '时间',
-                    key: 'createTime',
-                    dataIndex: 'createTime',
-                    scopedSlots: { customRender: 'createTime' },
-                },
-                {
-                    title: '描述',
-                    key: 'description',
-                    dataIndex: 'description',
-                    scopedSlots: { customRender: 'description' },
-                },
-                {
-                    title: '订单号',
-                    key: 'orderNum',
-                    dataIndex: 'orderNum',
-                    scopedSlots: { customRender: 'orderNum' },
-                },
-            ],
-            cashColumn:[
-                {
-                    title: '提现单号',
-                    dataIndex: 'code',
-                    key: 'code',
-                    scopedSlots: { customRender: 'code' },
-                },
-                {
-                    title: '可到账金额',
-                    dataIndex: 'cashMoney',
-                    key: 'cashMoney',
-                    scopedSlots: { customRender: 'cashMoney' },
-                },
-                {
-                    title: '提现金额',
-                    key: 'money',
-                    dataIndex: 'money',
-                    scopedSlots: { customRender: 'money' },
-                },
-                {
-                    title: '服务费',
-                    key: 'serviceMoney',
-                    dataIndex: 'serviceMoney',
-                    scopedSlots: { customRender: 'serviceMoney' },
-                },
-                {
-                    title: '收款方式',
-                    key: 'payMethod',
-                    dataIndex: 'payMethod',
-                    scopedSlots: { customRender: 'payMethod' },
-                },
-                {
-                    title: '状态',
-                    key: 'status',
-                    dataIndex: 'status',
-                    scopedSlots: { customRender: 'status' },
-                },
-                {
-                    title: '申请时间',
-                    key: 'createTime',
-                    dataIndex: 'createTime',
-                    scopedSlots: { customRender: 'createTime' },
-                },
-                {
-                    title: "查看原因",
-                    dataIndex: 'action',
-                    scopedSlots: { customRender: 'action' }
-                }
-            ],
-            rechargeColumn:[
-                {
-                    title: '充值单号',
-                    dataIndex: 'code',
-                    key: 'code',
-                    scopedSlots: { customRender: 'code' },
-                },
-                {
-                    title: '充值方式',
-                    dataIndex: 'mode',
-                    key: 'mode',
-                    scopedSlots: { customRender: 'mode' },
-                },
-                {
-                    title: '充值金额',
-                    dataIndex: 'money',
-                    key: 'money',
-                    scopedSlots: { customRender: 'money' },
-                },
-                {
-                    title: '状态',
-                    key: 'status',
-                    dataIndex: 'status',
-                    scopedSlots: { customRender: 'status' },
-                },
-                {
-                    title: '申请时间',
-                    key: 'createTime',
-                    dataIndex: 'createTime',
-                    scopedSlots: { customRender: 'createTime' },
-                },
-                {
-                    title: "查看原因",
-                    dataIndex: 'action',
-                    scopedSlots: { customRender: 'action' }
-                }
-            ],
-            type:0,
+            type:2,
             balance:0,
             total: 0,
             list: [],
@@ -425,9 +463,11 @@ export default {
         orderTypeRestTitle(value) {
             switch (value) {
                 case ORDERTYPE.CD:
-                    return "打赏用户"
+                    return "打赏"
                 case ORDERTYPE.BUYZY:
-                    return "购买内容"
+                    return "内容购买"
+                case ORDERTYPE.VIEWFEED:
+                    return "查看付费帖子"
                 case ORDERTYPE.JOINGROUP:
                     return "加入圈子"
                 case ORDERTYPE.JOINCOURSE:
@@ -453,6 +493,21 @@ export default {
             this.balance = res.data.balance
         },
         async getData(){
+            if (this.type ==3) {
+                const res = await this.$axios.get(api.getOrderList,{params: this.queryParam})
+                if (res.code != 1) {
+                    this.$message.error(
+                        res.message,
+                        3
+                    )
+                }
+                
+
+                this.list = res.data.list != null ? res.data.list : []
+                this.total = res.data.total || 0
+                return
+            }
+
             if (this.type == 2) {
                 const res = await this.$axios.get(api.getOrderList,{params: this.queryParam})
                 if (res.code != 1) {
@@ -469,8 +524,7 @@ export default {
                             money: item.money.toFixed(2),
                             createTime: item.createTime,
                             status:item.status,
-                            description: item.title,
-                            isIncome:item.isIncome,
+                            detail: item.detail,
                             orderNum:item.orderNum
                         }
                         return tmp
@@ -584,6 +638,13 @@ export default {
             this.getData()
         },
         changeType(e){
+            this.list = []
+            if (e == 3) {
+                this.queryParam.isIncome = true
+            }else {
+                this.queryParam.isIncome = false
+            }
+            this.queryParam.page = 1
             this.type = e
             this.getData()
         },
@@ -667,6 +728,12 @@ export default {
         }
         .wallet-select{
             margin: 10px 0;
+        }
+        .wallet-order{
+            margin-top: 20px;
+        }
+        .order-item{
+            margin-bottom: 20px;
         }
     }
 }

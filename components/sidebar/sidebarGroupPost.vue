@@ -18,7 +18,7 @@
 export default {
     methods:{
         goCreate(){
-           this.$router.push({ path: `/group/create`})
+           this.$router.push({ path: `/member/group/create`})
         }
     }
 }

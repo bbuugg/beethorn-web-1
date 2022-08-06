@@ -26,6 +26,11 @@
                 </nuxt-link>
               </li> -->
               <li>
+                <nuxt-link :to="`/download`">
+                  下载APP
+                </nuxt-link>
+              </li>
+              <li>
                 <nuxt-link :to="`/member`">
                   创作中心
                 </nuxt-link>
@@ -203,7 +208,7 @@ export default {
               return
           }
           this.M_UPDATE_TOKEN(null)
-          this.$cookies.remove("fiber-token")
+          this.$cookies.remove("Bertorn-token")
         },
         toRegister(){
             this.$Auth("register","用户注册","立即注册")

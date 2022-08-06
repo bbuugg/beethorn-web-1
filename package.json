@@ -20,12 +20,10 @@
     "less-loader": "^7.0.1",
     "nuxt": "^2.14.0",
     "qrious": "^4.0.2",
-    "spark-md5": "^3.0.2",
     "swiper": "5.4.5",
     "tinymce": "^5.4.2",
     "vue-awesome-swiper": "^4.1.1",
     "vue-clipboard2": "^0.3.1",
-    "vue-simple-uploader": "^0.7.6",
     "wavesurfer.js": "^4.2.0",
     "xgplayer": "^2.26.2"
   }

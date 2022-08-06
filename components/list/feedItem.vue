@@ -29,7 +29,7 @@
             </div>
         </div>
         <div @click="go" class="item-title">
-            <span v-if="info.type == 2" class="question">问题</span>
+            <!-- <span v-if="info.type == 2" class="question">问题</span> -->
             {{info.title}}
         </div>
 
@@ -89,7 +89,7 @@
                 </a-dropdown>
             </div>
             <div class="commnet-answer">
-                <span @click="openAnswer" v-if="info.type == 2" class="answer">我来回答</span> 
+                <!-- <span @click="openAnswer" v-if="info.type == 2" class="answer">我来回答</span>  -->
                 <div @click="openComment" class="comment">
                     评论 {{info.comments == 0 ? '' : info.comments}}
                 </div>
@@ -103,10 +103,10 @@
         </div>
 
         <!-- 回答 -->
-        <a-divider v-if="isopenAnswer"/>
+        <!-- <a-divider v-if="isopenAnswer"/>
         <div v-if="isopenAnswer" class="item-comment">
             <Answer :authorId="info.userInfo.id" :topicId="info.id"/>
-        </div>
+        </div> -->
     </div>
 </template>
 

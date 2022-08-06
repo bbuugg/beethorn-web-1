@@ -595,7 +595,7 @@ export default {
                 type:3,
                 files:"",
                 parentId:null,
-                replyId:e,
+                // replyId:e,
                 topId:this.createForm.topId,
             }
             if (this.createForm.fileList.length > 0 && this.createForm.video == null) {

@@ -2,14 +2,6 @@
     <div class="bingding-setting">
         <h2>账户设置</h2>
         <ul class="setting-contet">
-            <!-- <li class="setting-item">
-                <div class="setting-input-title">
-                用户名
-                </div>
-                <div class="setting-input">
-                    {{userName}}
-                </div>
-            </li> -->
             <li class="setting-item">
                 <div class="setting-input-title">
                     登录密码
@@ -21,19 +13,19 @@
                     </a-button>
                 </div>
             </li>
-            <li class="setting-item">
+            <li class="setting-item" v-if="config.loginRegisterMode == 'email'">
                 <div class="setting-input-title">
                     验证邮箱
                 </div>
                 <div class="setting-input">
                     <span v-if="email != ''">{{email}}</span>
                     <span v-else class="setting-input-span">未设置</span>
-                    <!-- <a-button @click="showEmailModal" type="dashed">
+                    <a-button @click="showEmailModal" type="dashed">
                        {{email != '' ? "修改" : "设置"}}
-                    </a-button> -->
+                    </a-button>
                 </div>   
             </li>
-            <li class="setting-item">
+            <li class="setting-item" v-if="config.loginRegisterMode == 'phone'">
                 <div class="setting-input-title">
                     验证手机
                 </div>
@@ -79,12 +71,28 @@
             cancelText="取消"
             class="binding-modal"
             >
-            <a-form-model ref="passWordForm" :model="passWordModal" :rules="passWordModal.rules" class="passWordModal_input">
-                <a-form-model-item  ref="oldPassWord" prop="oldPassWord">
-                    <a-input-password size="large" v-model="passWordModal.oldPassWord" placeholder="旧密码" />
+            <a-form-model 
+                ref="passWordModal" 
+                :model="passWordModal" 
+                :rules="passWordModal.rules" class="register_input">
+                <a-form-model-item  
+                    ref="account" 
+                    prop="account">
+                    <a-input size="large" v-model="passWordModal.account" 
+                    :placeholder="config.loginRegisterMode == 'email'?'请输入邮箱':'请输入手机号'">
+                        <a-icon slot="prefix" type="user" />
+                    </a-input>
                 </a-form-model-item>
-                <a-form-model-item  ref="newPassWord" prop="newPassWord">
-                    <a-input-password size="large" v-model="passWordModal.newPassWord" placeholder="新密码" />
+                <a-form-model-item ref="code" prop="code">
+                    <div class="code">
+                        <a-input :maxLength="6" class="code_input" size="large" v-model="passWordModal.code" placeholder="验证码" />
+                        <a-button size="large"  type="primary" @click="sendPassWordCode" :disabled="!passWordModal.show">
+                            {{passWordModal.content}}
+                        </a-button>
+                    </div>
+                </a-form-model-item>
+                <a-form-model-item ref="password" prop="password">
+                    <a-input-password size="large" v-model="passWordModal.password" placeholder="密码" />
                 </a-form-model-item>
             </a-form-model>
         </a-modal>
@@ -100,13 +108,13 @@
             class="binding-modal"
             >
             <a-form-model ref="emailModalForm" :model="emailModal" :rules="emailModal.rules" class="emailModal_input">
-                <a-form-model-item  ref="email" prop="email">
-                    <a-input size="large" v-model="emailModal.email" placeholder="输入邮箱" />
+                <a-form-model-item  ref="account" prop="account">
+                    <a-input size="large" v-model="emailModal.account" placeholder="输入邮箱" />
                 </a-form-model-item>
-                <a-form-model-item ref="captcha" prop="captcha">
+                <a-form-model-item ref="code" prop="code">
                     <div class="code">
-                        <a-input :maxLength="6" class="code_input" size="large" v-model="emailModal.captcha" placeholder="验证码" />
-                        <a-button @click="emailsendCode"  type="primary" :disabled="!emailModal.show">
+                        <a-input :maxLength="6" class="code_input" size="large" v-model="emailModal.code" placeholder="验证码" />
+                        <a-button @click="emailSendCode" size="large" type="primary" :disabled="!emailModal.show">
                              {{emailModal.content}}
                         </a-button>
                     </div>
@@ -119,28 +127,27 @@
         <a-modal
             title="设置手机"
             :visible="phoneModal.visible"
-            @ok="phonehandleOk"
-            @cancel="phonehandleCancel"
+            @ok="phoneModal"
+            @cancel="phoneModal"
             okText="确定"
             cancelText="取消"
             class="binding-modal"
             >
-            <a-form-model ref="phoneModalForm" :model="phoneModal" :rules="phoneModal.rules" class="phoneModal_input">
-                <a-form-model-item  ref="phone" prop="phone">
-                    <a-input size="large" v-model="phoneModal.phone" placeholder="输入手机">
-                    </a-input>
+            <a-form-model ref="phoneModal" :model="phoneModal" :rules="phoneModal.rules" class="phoneModal_input">
+                <a-form-model-item  ref="account" prop="account">
+                    <a-input size="large" v-model="phoneModal.account" placeholder="输入手机号" />
                 </a-form-model-item>
-                <a-form-model-item ref="captcha" prop="captcha">
+                <a-form-model-item ref="code" prop="code">
                     <div class="code">
-                        <a-input :maxLength="6" class="code_input" size="large" v-model="phoneModal.captcha" placeholder="验证码" />
-                        <a-button  type="primary" >
-                            发送验证码
+                        <a-input :maxLength="6" class="code_input" size="large" v-model="phoneModal.code" placeholder="验证码" />
+                        <a-button size="large" @click="phoneSendCode"  type="primary" :disabled="!phoneModal.show">
+                             {{phoneModal.content}}
                         </a-button>
                     </div>
                 </a-form-model-item>
             </a-form-model>
-
         </a-modal>
+
     </div>
 </template>
 
@@ -161,21 +168,33 @@ export default {
     },
     data(){
         return {
+            config: {
+                loginRegisterMode: "",
+                policyUrl: "",
+                protocolUrl: "",
+                social: ""
+            },
             email: null,
             phone: null,
             passWordModal:{
+                show: true,
+                count: 0,
+                content: "发送验证码",
+                timer: null,
                 visible:false,
-                oldPassWord: null,
-                newPassWord: null,
+                account: null,
+                code: null,
+                pass: null,
                 rules:{
-                    oldPassWord:[
-                        { required: true, message: '请输入旧密码', trigger: 'blur' }
+                    account:[
+                        { required: true, message: '请输入账户', trigger: 'blur' },
                     ],
-                    newPassWord:[
+                    code:[
+                        { required: true, message: '请输入验证', trigger: 'blur' },
+                    ],
+                    password:[
                         { required: true, message: '请输入新密码', trigger: 'blur' },
-                         { max: 30, message: '最大长度为30', trigger: 'blur'},
-                        { min: 6, message: '最小长度为6', trigger: 'blur'}
-                    ],
+                    ]
                 },
             },
             emailModal:{
@@ -184,27 +203,34 @@ export default {
                 content: "发送验证码",
                 timer: null,
                 visible:false,
-                email: null,
-                captcha: null,
+                account: null,
+                code: null,
                 rules:{
-                    email:[
+                    account:[
                         { required: true, message: '请输入邮箱', trigger: 'blur' },
                         { pattern:/^[A-Za-z0-9]+([_\.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$/, message: '邮箱格式不正确', trigger: 'blur'}
                     ],
-                    // captcha:[
-                    //     { required: true, message: '请输入验证码', trigger: 'blur' },
-                    // ],
+                    code:[
+                        { required: true, message: '请输入验证码', trigger: 'blur' },
+                    ],
                 },
             },
             phoneModal:{
+                show: true,
+                count: 0,
+                content: "发送验证码",
+                timer: null,
                 visible:false,
-                phone: null,
-                captcha: null,
+                account: null,
+                code: null,
                 rules:{
                     phone:[
                         { required: true, message: '请输入手机号', trigger: 'blur' },
                         {pattern:/^1[3456789]\d{9}$/, message: '手机号码格式不正确', trigger: 'blur'}
-                    ]
+                    ],
+                    code:[
+                        { required: true, message: '请输入验证码', trigger: 'blur' },
+                    ],
                 },
             }
         }
@@ -216,9 +242,14 @@ export default {
         async getData(){
             try {
                 const res = await this.$axios.get(api.getAccountSecurity)
-                
                 this.email = res.data.info.email
                 this.phone = res.data.info.phone
+
+                const option = await this.$axios.get(api.getOption)     
+                this.config.loginRegisterMode=option.data.info.loginRegisterMode
+                this.config.policyUrl=option.data.info.policyUrl
+                this.config.protocolUrl=option.data.info.protocolUrl
+                this.config.social= option.data.info.social
             } catch (error) {
                 setTimeout(() => {
                     this.$notification.error({
@@ -228,32 +259,84 @@ export default {
                 }, 1000)
             }
         },
+        sendPassWordCode(){
+            this.$refs.passWordModal.validateField("account",async (err)=>{
+                if (err != "") {
+                    return false
+                }
+                const TIME_COUNT = 60;
+                if (!this.timer) {
+                this.passWordModal.count = TIME_COUNT;
+                this.passWordModal.show = false;
+                this.passWordModal.timer = setInterval(() => {
+                    if (this.passWordModal.count > 0 && this.passWordModal.count <= TIME_COUNT) {
+                            this.passWordModal.count--;
+                            this.passWordModal.content = `${this.passWordModal.count}秒后重发`
+                        } else {
+                            this.passWordModal.show = true;
+                            this.passWordModal.content = "发送验证码"
+                            clearInterval(this.passWordModal.timer);
+                            this.passWordModal.timer = null;
+                        }
+                    }, 1000)
+                }
+
+                const formData = {
+                    account:this.passWordModal.account,
+                }
+                const res = await this.$axios.post(api.sendCaptcha,formData)
+                if (res.code != 1) {
+                    this.$message.error(
+                        res.message,
+                        3
+                    )
+                    return
+                }
+                
+            })
+        },
         // 密码框modal
         showPassWordModal(){
             this.passWordModal.visible = true
+            if (this.config.loginRegisterMode == "email") {
+                this.passWordModal.rules.account.push({
+                        pattern:/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/,
+                        message: '请输入邮箱', trigger: 'blur'
+                    })
+                }else{
+                    this.passWordModal.rules.account.push({
+                        pattern:/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/,
+                        message: '请输入手机号', trigger: 'blur'
+                    })
+                }
         },
         passWordhandleOk(){
-            this.$refs.passWordForm.validate(async valid => {
+            this.$refs.passWordModal.validate(async valid => {
                 if (valid) {     
                     try {
+               
                         const formData = {
-                            "oldPass":this.passWordModal.oldPassWord,
-                            "newPass":this.passWordModal.newPassWord
+                            account:this.passWordModal.account,
+                            code:this.passWordModal.code,
+                            password:this.passWordModal.password,
                         }
                         const res = await this.$axios.post(api.postAccountUpdatePassWord,formData)
-                        if (res.code == 1) {
+                        if (res.code != 1) {
                             this.$message.success(
                                 res.message,
                                 3
                             )
                             this.passWordModal.visible = false
-                            this.passWordModal.oldPassWord = null
-                            this.passWordModal.newPassWord = null
+                            this.passWordModal.account = null
+                            this.passWordModal.code = null
+                            this.passWordModal.password = null
+                            return;
                         }else{
-                             this.$message.error(
-                                res.message,
+                            this.$message.error(
+                                "密码修改成功",
                                 3
                             )
+                            this.passWordhandleCancel()
                         }
                     } catch (error) {
                         // console.log(error)
@@ -283,23 +366,25 @@ export default {
                 if (valid) {     
                     try {
                         const formData = {
-                            "email":this.emailModal.email,
-                            "captcha":this.emailModal.captcha
+                            account:this.emailModal.account,
+                            code:this.emailModal.code,
                         }
                         const res = await this.$axios.post(api.postAccountUpdateEmail,formData)
-                        if (res.code == 1) {
+                         if (res.code != 1) {
                             this.$message.success(
                                 res.message,
                                 3
                             )
-                            this.passWordModal.visible = false
-                            this.passWordModal.oldPassWord = null
-                            this.passWordModal.newPassWord = null
+                            this.emailModal.visible = false
+                            this.emailModal.account = null
+                            this.emailModal.code = null
+                            return;
                         }else{
-                             this.$message.error(
-                                res.message,
+                            this.$message.error(
+                                "邮箱修改成功",
                                 3
                             )
+                            this.emailhandleCancel()
                         }
                     } catch (error) {
                         setTimeout(() => {
@@ -318,38 +403,41 @@ export default {
         emailhandleCancel(){
             this.emailModal.visible = false;
         },
-        emailsendCode(){
-             this.$refs.emailModalForm.validate(async valid => {
-                    if (!valid) {
-                        // console.log("sdfasdf")
-                        return false
-                    }
-                    this.emailhandleCancel()
-                    this.$Code(this.emailModal.email).then((res)=>{
-                        if (res != false) {
-                            this.showEmailModal()
-                            const TIME_COUNT = 60;
-                            if (!this.timer) {
-                            this.emailModal.count = TIME_COUNT;
-                            this.emailModal.show = false;
-                            this.emailModal.timer = setInterval(() => {
-                                if (this.emailModal.count > 0 && this.emailModal.count <= TIME_COUNT) {
-                                    this.emailModal.count--;
-                                    this.emailModal.content = `${this.emailModal.count}秒后重发`
-                                    } else {
-                                    this.emailModal.show = true;
-                                    this.emailModal.content = "发送验证码"
-                                    clearInterval(this.emailModal.timer);
-                                    this.emailModal.timer = null;
-                                    }
-                                }, 1000)
-                            }
+        emailSendCode(){
+            this.$refs.emailModal.validateField("account",async (err)=>{
+                if (err != "") {
+                    return false
+                }
+                const TIME_COUNT = 60;
+                if (!this.timer) {
+                this.emailModal.count = TIME_COUNT;
+                this.emailModal.show = false;
+                this.emailModal.timer = setInterval(() => {
+                    if (this.emailModal.count > 0 && this.emailModal.count <= TIME_COUNT) {
+                            this.emailModal.count--;
+                            this.emailModal.content = `${this.emailModal.count}秒后重发`
+                        } else {
+                            this.emailModal.show = true;
+                            this.emailModal.content = "发送验证码"
+                            clearInterval(this.emailModal.timer);
+                            this.emailModal.timer = null;
                         }
-                    }).catch((err)=>{
-                        console.log(err)
-                        // this.createForm.cover = undefined
-                    })
-                })
+                    }, 1000)
+                }
+
+                const formData = {
+                    account:this.emailModal.account,
+                }
+                const res = await this.$axios.post(api.sendCaptcha,formData)
+                if (res.code != 1) {
+                    this.$message.error(
+                        res.message,
+                        3
+                    )
+                    return
+                }
+                
+            })
         },
 
         //  手机设置框
@@ -357,11 +445,84 @@ export default {
             this.phoneModal.visible = true
         },
         phonehandleOk(){
-
+            this.$refs.phoneModal.validate(async valid => {
+                if (valid) {     
+                    try {
+                        const formData = {
+                            account:this.phoneModal.account,
+                            code:this.phoneModal.code,
+                        }
+                        const res = await this.$axios.post(api.postAccountUpdatePhone,formData)
+                         if (res.code != 1) {
+                            this.$message.success(
+                                res.message,
+                                3
+                            )
+                            this.phoneModal.visible = false
+                            this.phoneModal.account = null
+                            this.phoneModal.code = null
+                            return;
+                        }else{
+                            this.$message.error(
+                                "手机号修改成功",
+                                3
+                            )
+                            this.emailhandleCancel()
+                        }
+                    } catch (error) {
+                        setTimeout(() => {
+                            this.$notification.error({
+                                message: '网络错误',
+                                description: "请稍后再试"
+                            })
+                        }, 1000)
+                    }
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
         },
         phonehandleCancel(){
             this.phoneModal.visible = false;
-        }
+        },
+        phoneSendCode(){
+            this.$refs.phoneModal.validateField("account",async (err)=>{
+                if (err != "") {
+                    return false
+                }
+                const TIME_COUNT = 60;
+                if (!this.timer) {
+                this.phoneModal.count = TIME_COUNT;
+                this.phoneModal.show = false;
+                this.phoneModal.timer = setInterval(() => {
+                    if (this.phoneModal.count > 0 && this.phoneModal.count <= TIME_COUNT) {
+                            this.phoneModal.count--;
+                            this.phoneModal.content = `${this.phoneModal.count}秒后重发`
+                        } else {
+                            this.phoneModal.show = true;
+                            this.phoneModal.content = "发送验证码"
+                            clearInterval(this.phoneModal.timer);
+                            this.phoneModal.timer = null;
+                        }
+                    }, 1000)
+                }
+
+                const formData = {
+                    account:this.phoneModal.account,
+                }
+                const res = await this.$axios.post(api.sendCaptcha,formData)
+                if (res.code != 1) {
+                    this.$message.error(
+                        res.message,
+                        3
+                    )
+                    return
+                }
+                
+            })
+        },
+
 
     }
 }

@@ -79,9 +79,10 @@ export default {
         }
     },
     mounted(){
-       
+        this.loading = true
         this.getTopList()
         this.getList()
+        this.loading = false
         this.getGroup()
         window.addEventListener('scroll', this.scrollList)
     },
@@ -101,13 +102,13 @@ export default {
             //滚动条到底部的条件
             if (scrollTop+windowHeight > scrollHeight-50 && !this.noMore) {
                 this.queryParam.page += 1
-                    this.getList()
+                this.getList()
                 return
             }
 
         },
         async getList(){
-            this.loading = true
+         
             const res = await this.$axios.get(api.getSystemFilter,{params: this.queryParam}) 
             if (res.code != 1) {
                 this.$message.error(
@@ -148,7 +149,7 @@ export default {
             this.noMore = res.data.list.length > 0 ? false : true
             this.list = [...this.list,...res.data.list]
             this.total = res.data.total != null ? res.data.total : 0
-            this.loading = false
+         
            
         },
 
@@ -188,15 +189,7 @@ export default {
             this.hotGroupList = hotGroupRes.data.list != null ? hotGroupRes.data.list : []
 
             if (this.token != null) {
-                const myjoinQueryParam = {
-                    page:1,
-                    limit: 10,
-                    module: MODULE.GROUP,
-                    mode: MODE.HOT,
-                    isJoin: true,
-                    authorId:this.userInfo.userId
-                }
-                const myGroupRes = await this.$axios.get(api.getSystemFilter,{params: myjoinQueryParam}) 
+                const myGroupRes = await this.$axios.get(api.getAccountGroup) 
                 if (myGroupRes.code != 1) {
                     this.$router.push(`/404`)
                     this.$message.error(
@@ -207,10 +200,7 @@ export default {
                 }
         
                 this.myGroupList = myGroupRes.data.list != null ? myGroupRes.data.list : []
-                
             }
-
-            
 
         },
 

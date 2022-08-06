@@ -57,7 +57,8 @@ export default {
             queryParam:{
                 page:1,
                 limit: 5,
-                module:this.module
+                module:this.module,
+                isNoChildren:true,
             },
             list:[],
         }

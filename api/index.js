@@ -39,8 +39,9 @@ const api = {
     getAccountInfo: web + "/account/info", //获取用户账户信息
     postAccountEdit: web +  "/account/edit", //设置用户账户基础信息
     getAccountSecurity: web + "/account/security", //获取用户账户绑定信息
-    postAccountUpdatePassWord: web + "/account/update/password", //修改用户账户密码
-    postAccountUpdateEmail: web + "/account/update/email", //修改用户邮箱
+    postAccountUpdatePassWord: web + "/account/editPassword", //修改用户账户密码
+    postAccountUpdateEmail: web + "/account/editEmail", //修改用户邮箱
+    postAccountUpdatePhone: web + "/account/editPhone", //修改用户邮箱
     getAccountBalance: web + "/account/balance", //获取用户账户余额
     getAccountVerifyStatusIsPayPrice: web + "/account/verify/statusAndIsPayAndPrice", //获取认证信息
     getAccountVerify: web + "/account/verify", //获取认证信息

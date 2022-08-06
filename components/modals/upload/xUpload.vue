@@ -40,7 +40,7 @@
 <script>
 import api from '@/api/index'
 import { mapState } from "vuex"
-import SparkMD5 from 'spark-md5';
+// import SparkMD5 from 'spark-md5';
 export default {
     data() {
         return {

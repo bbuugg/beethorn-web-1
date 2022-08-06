@@ -9,14 +9,11 @@
                     <span>{{base.recordNumber}}</span>
                 </div>
                 <ul class="page_list">
-                    <li class="item">
+                    <li class="item" @click="go(1)">
                         关于我们
                     </li>
-                    <li class="item">
-                        关于我们
-                    </li>
-                    <li class="item">
-                        关于我们
+                    <li class="item" @click="go(1)">
+                       用户协议
                     </li>
                 </ul>
             </div>
@@ -27,13 +24,10 @@
                 <div class="link_text">友情链接：</div>
                 <ul class="link_list">
                     <li class="item">
-                        关于我们
+                        暂无友链
                     </li>
                     <li class="item">
-                        关于我们
-                    </li>
-                    <li class="item">
-                        关于我们
+                       暂无友链
                     </li>
                 </ul>
             </div>
@@ -46,8 +40,10 @@ export default {
     computed:{
         ...mapState(["design","base"])
     },
-    mounted(){
-        console.log(this.base)
+    methods:{
+        go(e){
+            this.$router.push(`/pages/${e}`)
+        }
     }
 }
 </script>
@@ -80,6 +76,7 @@ export default {
                 display: flex;
                 align-items: center;
                 .item{
+                    cursor: pointer;
                     margin-right: 10px;
                 }
             }

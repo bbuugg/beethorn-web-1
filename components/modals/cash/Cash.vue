@@ -270,7 +270,7 @@ export default {
         },
         changeTmpMonry(e){
             let tmpM = e
-            this.serviceMoney = tmpM * (this.cashServicePercent / 100)
+            this.serviceMoney = (tmpM * (this.cashServicePercent / 100)).toFixed(2)
             this.tmpMoney = ((tmpM - tmpM * (this.cashServicePercent / 100)).toFixed(2))
         },
         onSubmit(e){
@@ -283,7 +283,7 @@ export default {
                         )
                         return
                     }
-                    console.log(this.cashForm.money)
+                
                     if (this.cashForm.money < this.minCash) {
                         this.$message.error(
                             "少于最少提现额度",

@@ -2,8 +2,8 @@ import Vue from 'vue'
 // import Upload from '@/components/modals/upload/Upload'
 
 
-import uploader from 'vue-simple-uploader'
-Vue.use(uploader)
+// import uploader from 'vue-simple-uploader'
+// Vue.use(uploader)
 
 import Upload from '@/components/modals/upload/Upload'
 
