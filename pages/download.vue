@@ -44,7 +44,7 @@ import api from "@/api/index"
 export default {
      head(){
         return this.$seo(`下载app-${this.base.title}`,`${this.base.childTitle}`,[{
-            hid:"fiber-desc",
+            hid:"beethorn-desc",
             name:"description",
             content:`${this.base.description}`
         }])

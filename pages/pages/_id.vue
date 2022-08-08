@@ -16,7 +16,7 @@ import api from "@/api/index"
 export default {
     head(){
         return this.$seo(`${this.info.title}-${this.base.title}`,`${this.info.title}`,[{
-            hid:"fiber-desc",
+            hid:"beethorn-desc",
             name:"description",
             content:`${this.info.description}`
         }])

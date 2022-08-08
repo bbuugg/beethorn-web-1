@@ -158,7 +158,7 @@ export default {
     middleware: 'auth',
     head(){
         return this.$seo(`用户中心-${this.base.title}`,`用户中心`,[{
-            hid:"fiber",
+            hid:"beethorn",
             name:"description",
             content:`用户中心`
         }])

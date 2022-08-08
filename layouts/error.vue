@@ -19,7 +19,7 @@ export default {
   // layout: 'blog', // 你可以为错误页面指定自定义的布局
   head(){
       return this.$seo(`404页面未找到-${this.base.title}`,`404页面未找到`,[{
-          hid:"fiber",
+          hid:"beethorn",
           name:"description",
           content:`404页面未找到`
       }])

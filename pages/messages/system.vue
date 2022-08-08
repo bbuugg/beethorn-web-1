@@ -153,7 +153,7 @@ export default {
     },
     head(){
         return this.$seo(`系统通知-${this.base.title}`,`系统通知`,[{
-            hid:"fiber",
+            hid:"beethorn",
             name:"description",
             content:`系统通知`
         }])

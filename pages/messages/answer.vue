@@ -137,7 +137,7 @@ export default {
     },
     head(){
         return this.$seo(`回答通知-${this.base.title}`,`回答通知`,[{
-            hid:"fiber",
+            hid:"beethorn",
             name:"description",
             content:`回答通知`
         }])

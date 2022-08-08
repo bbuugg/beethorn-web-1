@@ -1,4 +1,4 @@
-const web = "/api/v1/web"
+const web = "/v1/index"
 const api = {
 
     // -------------------------站点接口

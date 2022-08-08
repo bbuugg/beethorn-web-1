@@ -103,7 +103,7 @@ export default {
     },
     head(){
         return this.$seo(`圈子广场-${this.base.title}`,`圈子广场`,[{
-            hid:"fiber",
+            hid:"beethorn",
             name:"description",
             content:`圈子广场`
         }])

@@ -220,7 +220,7 @@ export default {
               return
           }
           this.M_UPDATE_TOKEN(null)
-          this.$cookies.remove("fiber-token")
+          this.$cookies.remove("beethorn-token")
         },
         toRegister(){
             this.$Auth("register","用户注册","立即注册")

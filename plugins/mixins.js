@@ -116,7 +116,7 @@ Vue.mixin({
 			return{
 				title,
 				meta:[{
-					hid:"fiber",
+					hid:"beethorn",
 					name:"keywords",
 					content
 				}].concat(payload)

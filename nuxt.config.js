@@ -25,8 +25,8 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'fiber-desc', name: 'description', content: process.env.npm_package_description || '' },
-      { hid: 'fiber', name: 'keywords', content: process.env.npm_package_description || '' }
+      { hid: 'beethorn-desc', name: 'description', content: process.env.npm_package_description || '' },
+      { hid: 'beethorn', name: 'keywords', content: process.env.npm_package_description || '' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
@@ -136,21 +136,21 @@ export default {
     "cookie-universal-nuxt"
   ],
   
-  // server:{
-  //   port: 3000,
-  //   host: "0.0.0.0"
-  // },
+  server:{
+    port: 3000,
+    host: "0.0.0.0"
+  },
 
-  axios: {
-    prefix: '/api/',
-    proxy: true,
-  },
-  proxy: {
-    "/api/": {
-      changeOrigin: true,
-      target: "http://localhost:8199"
-    }
-  },
+  // axios: {
+  //   prefix: '/api/',
+  //   proxy: true,
+  // },
+  // proxy: {
+  //   "/api/": {
+  //     changeOrigin: true,
+  //     target: "http://localhost:8199"
+  //   }
+  // },
   /*
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/

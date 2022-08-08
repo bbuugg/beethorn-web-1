@@ -383,14 +383,14 @@ export default {
               
             }
             .active{
-              color: rgb(140, 111, 235);
-              border-bottom: 2px solid rgb(140, 111, 235);
+              color: rgb(248, 156, 64);
+              // border-bottom: 2px solid rgb(238, 199, 70);
             }
           }
           .item:hover{
             .link{
-              color: rgb(140, 111, 235);
-              border-bottom: 2px solid rgb(140, 111, 235);
+              //  color: rgb(248, 156, 64);
+              border-bottom: 2px solid rgb(238, 199, 70);
             }
           }
         }

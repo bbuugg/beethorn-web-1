@@ -145,7 +145,7 @@ export default {
     },
     head(){
         return this.$seo(`筛选-${this.base.title}`,`筛选`,[{
-            hid:"fiber",
+            hid:"beethorn",
             name:"description",
             content:`筛选`
         }])

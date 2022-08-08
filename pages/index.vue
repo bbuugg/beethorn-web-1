@@ -36,7 +36,7 @@ import {MODULE} from "@/shared/module"
 export default {
     head(){
         return this.$seo(`话题动态-${this.base.title}`,`${this.base.childTitle}`,[{
-            hid:"fiber-desc",
+            hid:"beethorn-desc",
             name:"description",
             content:`${this.base.description}`
         }])
@@ -79,8 +79,10 @@ export default {
         }
     },
     mounted(){
-        this.loading = true
+        this.topLoading = true
         this.getTopList()
+        this.topLoading = false
+        this.loading = true
         this.getList()
         this.loading = false
         this.getGroup()
@@ -155,7 +157,6 @@ export default {
 
         // 获取置顶列表
         async getTopList(){
-            this.topLoading = true
             const res = await this.$axios.get(api.getTopicTop) 
             if (res.code != 1) {
                 this.$router.push(`/404`)
@@ -165,7 +166,6 @@ export default {
                 )
                 return
             }
-            this.topLoading = false
             this.topList = res.data.list != null ? res.data.list : []
         },
 
@@ -206,33 +206,38 @@ export default {
 
         // 投稿重新获取
         resetList(){
+            this.loading = true
             this.list = []
             this.total = 0
             this.queryParam.page = 1
             this.getList()
+            this.loading = false
         },
 
         // 修改菜单
         changeMenu(e){
+            this.loading = true
             this.queryParam.groupId = 0
             this.queryParam.mode = e
-            
- 
             this.list = []
             this.total = 0
             this.queryParam.page = 1
             this.getList()
+            this.loading = false
         },
         // 修改小组
         changeMyGroup(e){
+            this.loading = true
+            
             this.queryParam.mode = MODE.NEW
-
             this.list = []
             this.queryParam.isJoin = true
             this.queryParam.groupId = e
             this.total = 0
             this.queryParam.page = 1
+    
             this.getList()
+            this.loading = false
         },
         // 修改小组
         // changeHotGroup(e){

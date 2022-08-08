@@ -157,7 +157,7 @@ export default {
     },
     head(){
         return this.$seo(`评论通知-${this.base.title}`,`评论通知`,[{
-            hid:"fiber",
+            hid:"beethorn",
             name:"description",
             content:`评论通知`
         }])

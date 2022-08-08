@@ -125,7 +125,7 @@ export default {
     },
     head(){
         return this.$seo(`${this.base.childTitle}-${this.base.title}`,`${this.base.childTitle}`,[{
-            hid:"fiber-desc",
+            hid:"beethorn-desc",
             name:"description",
             content:`${this.base.description}`
         }])

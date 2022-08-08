@@ -148,7 +148,7 @@ export default {
     },
     head(){
         return this.$seo(`发现-${this.base.title}`,`${this.base.childTitle}`,[{
-            hid:"fiber-desc",
+            hid:"beethorn-desc",
             name:"description",
             content:`${this.base.description}`
         }])
