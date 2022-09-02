@@ -11,6 +11,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/proxy": "^2.0.1",
+    "@nuxtjs/sitemap": "^2.4.0",
     "@tinymce/tinymce-vue": "^3.2.2",
     "ant-design-vue": "^1.6.5",
     "cookie-universal-nuxt": "^2.1.4",

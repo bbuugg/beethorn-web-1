@@ -34,12 +34,14 @@ import api from "@/api/index"
 import {MODE} from "@/shared/mode"
 import {MODULE} from "@/shared/module"
 export default {
-    head(){
-        return this.$seo(`话题动态-${this.base.title}`,`${this.base.childTitle}`,[{
-            hid:"beethorn-desc",
-            name:"description",
-            content:`${this.base.description}`
-        }])
+    head () {
+        return {
+            title: `${this.base.title} - ${this.base.childTitle}`,
+            meta: [
+                { name: 'keywords', content: this.base.description },
+                { name: 'description', content: this.base.description }
+            ]
+        }
     },
     components:{
         LeftMenu,

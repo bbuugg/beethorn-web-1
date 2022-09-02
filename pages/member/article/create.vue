@@ -37,6 +37,7 @@
 
                     <a-form-model-item ref="content" prop="content">
                         <tinymceEditor 
+                        :toolbar="'undo redo | formatselect  | h2Title hr bold italic forecolor backcolor codesample | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | lists imagelibrary  | removeformat'"
                         @writeContent="writeContent"   v-model="createForm.content"/>
                     </a-form-model-item>
 

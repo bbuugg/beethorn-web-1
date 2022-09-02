@@ -75,12 +75,14 @@ export default {
         SidebarResourceList,
         SidbarAdv,
     },
-    head(){
-        return this.$seo(`${this.info.title}-${this.base.title}`,`${this.info.title}`,[{
-            hid:"beethorn-desc",
-            name:"description",
-            content:`${this.info.description}`
-        }])
+    head () {
+        return {
+            title: `${this.info.title} - ${this.base.title}`,
+            meta: [
+                { name: 'keywords', content: this.info.title },
+                { name: 'description', content: this.info.description }
+            ]
+        }
     },
     validate({ params }) {
         if (params.id != null && params.id != undefined && params.id != NaN) {

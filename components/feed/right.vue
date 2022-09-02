@@ -103,7 +103,7 @@
                         <ul>
                             <li v-for="(item,index) in createForm.imgList" :key="index">
                                 <div class="image-box">
-                                    <img :src="item" alt="xxx">
+                                    <img :src="item | resetImage(100,100)" alt="xxx">
                                     <b @click="removeImg(index)" class="img-close"><a-icon type="close" /></b>
                                 </div>
                             </li>
@@ -130,6 +130,24 @@
                             />
                         </div>
                     </div>
+                    <div v-if="feedMetaOptions.resourceVisible" class="create-meta auth">
+                        <a-button type="dashed" block>
+                            添加资源
+                        </a-button>
+                        <div class="resource-list">
+                            <div class="resource-item">
+                                <div class="link-input">
+
+                                </div>
+                                <div class="pass-input">
+
+                                </div>
+                                <div class="add-btn">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- <div v-if="feedMetaOptions.videoVisible" class="create-meta video">
                         <p>只能上传一个视频</p>
                         <ul>
@@ -149,6 +167,10 @@
                             <a-icon theme="filled" type="file-image" />
                             <span>图片</span>
                         </li>
+                        <!-- <li @click="selectResource" class="create-footer-l-item">
+                            <a-icon theme="filled" type="file-zip" />
+                            <span>资源</span>
+                        </li> -->
                         <!-- <li class="create-footer-l-item">
                             <a-icon type="video-camera" @click="selectVideo"/>
                         </li> -->
@@ -297,6 +319,7 @@ export default {
                 imgVisible:false,
                 videoVisible:false,
                 authVisible:false,
+                resourceVisible:false,
             },
             createForm:{
                 titleCount:0,
@@ -517,6 +540,9 @@ export default {
         },
         selectAuth(){
             this.feedMetaOptions.authVisible = !this.feedMetaOptions.authVisible
+        },
+        selectResource(){
+            this.feedMetaOptions.resourceVisible = !this.feedMetaOptions.resourceVisible
         },
         // ---------- 删除
         removeImg(i){

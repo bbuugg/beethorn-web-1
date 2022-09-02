@@ -4,8 +4,7 @@ import notification from 'ant-design-vue/lib/notification'
 export default function ({store, $axios,app: { $cookies },redirect})  {
 
 	// 访问基本设置
-    // $axios.defaults.baseURL = process.env.BASE_URL
-    $axios.defaults.baseURL = "https://api.beethorn.com"
+    $axios.defaults.baseURL = process.env.BASE_URL
     $axios.defaults.timeout = 200000
     
 	// request拦截器，我这里设置了一个token，当然你可以不要

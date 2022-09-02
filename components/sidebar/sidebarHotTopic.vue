@@ -48,6 +48,7 @@
             }
             .sidear-ask-title{
                 h2{
+                    line-height: 20px;
                     cursor: pointer;
                     user-select: none;
                     font-size: 13px;

@@ -161,6 +161,11 @@ export default {
             justify-content: center;
             align-items: center;
             height: 100%;
+            width: 100%;
+            img{
+                max-width: 50%;
+                max-height: 100%;
+            };
         } 
         .tools{
             z-index: 5;

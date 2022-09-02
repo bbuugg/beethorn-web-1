@@ -1,19 +1,19 @@
 <template>
     <div class="iamge">
         <div v-if="list.length == 1" class="image-one">
-            <img @click="show(0)" :src="list[0]" alt="">
+            <img @click="show(0)" :src="list[0]| resetImage(195,160)" alt="">
         </div>
         <div v-if="list.length == 2" class="image-two">
-            <img @click="show(0)" :src="list[0]" alt="">
+            <img @click="show(0)" :src="list[0] | resetImage(195,160)" alt="">
             <span class="size-box"></span>
-            <img @click="show(1)" :src="list[1]" alt="">
+            <img @click="show(1)" :src="list[1] | resetImage(195,160)" alt="">
         </div>
         <div v-if="list.length >= 3" class="image-three">
-            <img  @click="show(0)" :src="list[0]" alt="">
+            <img  @click="show(0)" :src="list[0] | resetImage(195,160)" alt="">
             <span class="size-box"></span>
-            <img  @click="show(1)" :src="list[1]" alt="">
+            <img  @click="show(1)" :src="list[1] | resetImage(195,160)" alt="">
             <span class="size-box"></span>
-            <img  @click="show(2)" :src="list[2]" alt="">
+            <img  @click="show(2)" :src="list[2] | resetImage(195,160)" alt="">
             <span v-if="list.length > 3" class="count">{{list.length}}</span>
         </div>
     </div>

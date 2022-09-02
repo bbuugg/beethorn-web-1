@@ -2,7 +2,7 @@
     <div class="article_item">
         <div class="article_show"></div>
         <div class="article_item_img">
-            <nuxt-link :to="{path:`/${info.module}/${info.id}` }" class="cover-link">
+            <nuxt-link :to="{path:`/article/${info.id}` }" class="cover-link">
                 <img :src="info.cover | resetImage(240,170)" :alt="info.title">
             </nuxt-link>
         </div>
@@ -31,7 +31,7 @@
                 </div> -->
             </div>
             <!-- 简介 -->
-            <nuxt-link :to="{path:`/${info.module}/${info.id}` }" class="cover-link">
+            <nuxt-link :to="{path:`/article/${info.id}` }" class="cover-link">
                 <p>{{info.description}}</p>
             </nuxt-link>
             <!-- meta信息 -->
@@ -113,6 +113,7 @@ export default {
             z-index: 5;
             border-radius: 8px;
             img{
+                object-fit: cover;
                 border-radius: 8px;
                 width: 100%;
                 height: 100%;

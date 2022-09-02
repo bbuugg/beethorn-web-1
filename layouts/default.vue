@@ -42,7 +42,7 @@
           <div class="header-bottom-logo-menu-user-search" :style="{width:design.width+'px'}" >
               <div class="logo-menu">
                 <div class="logo">
-                  <img src="http://beethorn.com/public/uploads/2022-05-27/ck9u7i5qywpwjkgqmb.png" :alt="base.title">
+                  <img :src="base.logo" :alt="base.title">
                 </div>
                 <ul class="menu">
                   <li class="item">
@@ -51,8 +51,28 @@
                     </nuxt-link>
                   </li>
                   <li class="item">
+                    <nuxt-link :class="selectedKeys[0] == '/article' ? 'active' : ''" class="link" :to="`/article`">
+                      文章
+                    </nuxt-link>
+                  </li>
+                  <li class="item">
                     <nuxt-link :class="selectedKeys[0] == '/discover' ? 'active' : ''" class="link" :to="`/discover`">
                       发现
+                    </nuxt-link>
+                  </li>
+                  <li class="item">
+                    <nuxt-link :class="selectedKeys[0] == '/video' ? 'active' : ''" class="link" :to="`/video`">
+                      视频
+                    </nuxt-link>
+                  </li>
+                  <li class="item">
+                    <nuxt-link :class="selectedKeys[0] == '/audio' ? 'active' : ''" class="link" :to="`/audio`">
+                      音频
+                    </nuxt-link>
+                  </li>
+                  <li class="item">
+                    <nuxt-link :class="selectedKeys[0] == '/edu' ? 'active' : ''" class="link" :to="`/edu`">
+                      学习
                     </nuxt-link>
                   </li>
                   <!-- <li class="item">
@@ -66,13 +86,13 @@
                 <a-space :size="15">
                   
 
-                  <nuxt-link :to="`/messages/system`" v-if="token != null && system != 0 || finance != 0 || comment != 0 || answer != 0 || like != 0 || follow != 0">
+                  <nuxt-link :to="`/notice/system`" v-if="token != null && system != 0 || finance != 0 || comment != 0 || answer != 0 || like != 0 || follow != 0">
                     <a-badge dot>
                       <a-icon :style="{fontSize:22+'px',color:'#6a6a6a'}" class="icon" type="bell" />
                     </a-badge>
                   </nuxt-link>
                   
-                  <nuxt-link :to="`/messages/system`" v-if="token != null && system == 0 && finance == 0 && comment == 0 && answer == 0 && like == 0 && follow == 0">
+                  <nuxt-link :to="`/notice/system`" v-if="token != null && system == 0 && finance == 0 && comment == 0 && answer == 0 && like == 0 && follow == 0">
                     <a-icon :style="{fontSize:22+'px',color:'#6a6a6a'}" class="icon" type="bell" />
                   </nuxt-link>
 
@@ -224,7 +244,7 @@ export default {
         },
         goMessage(){
           // this.$setWs.initWebSocket()
-          this.$router.push("/messages/system")
+          this.$router.push("/notice/system")
         },
         onSearch(){
             this.$router.push({
@@ -298,7 +318,6 @@ export default {
         display: flex;
         .item{
             padding: 0 10px;
-            // height: 36px;
           a{
             display: flex;
             flex-direction: column;
@@ -306,6 +325,7 @@ export default {
             font-size: 16px;
             color: #6a6a6a;
             font-weight: 700;
+            font-family: "beethorn-zc";
             .icon{
               font-size: 20px;
               margin-bottom: 5px;
@@ -370,6 +390,7 @@ export default {
             height: 60px;
             padding: 0 1.125rem;
             a{
+              font-family: "beethorn-zc";
               color: #757575;
               display: flex;
               justify-content: center;
@@ -417,5 +438,9 @@ export default {
 }
 .ant-layout-footer{
   padding: 0;
+}
+.ant-layout{
+  background-color: white;
+  // background-color: #1c1f2b;
 }
 </style>
