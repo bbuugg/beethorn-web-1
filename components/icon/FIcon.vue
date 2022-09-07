@@ -8,7 +8,7 @@
 import { Icon } from 'ant-design-vue';
 
 const FIcon = Icon.createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_3028671_f2rm6va5c37.js',
+  scriptUrl: '//at.alicdn.com/t/c/font_3173508_wido4uw0a6m.js',
 });
 export default {
   props:{ 

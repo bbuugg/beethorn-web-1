@@ -47,7 +47,7 @@
                会员价格{{base.currencySymbol}} {{vipPrice}}
             </div>
             <a-button @click="pay" type="danger" ghost>
-                支付
+                {{info.hideMode | resetText}}
             </a-button>
         </div>
 
@@ -62,6 +62,11 @@
             <!-- 链接 -->
             <div v-if="info.relatedInfo.module != ''&&info.relatedInfo.id != 0">
                 <LinkAdaptation :info="info.relatedInfo"/>
+            </div>
+
+            <!-- 资源 -->
+            <div v-if="info.resources.length != ''">
+                <ResourceAdaptation :list="info.resources"/>
             </div>
         </div>
 
@@ -112,7 +117,7 @@
 
 
 <script>
-
+import ResourceAdaptation from "@/components/adaptation/resource"
 import LinkAdaptation from "@/components/adaptation/link"
 import ImageAdaptation from "@/components/adaptation/image"
 import CommentList from "@/components/comment/List"
@@ -138,6 +143,7 @@ export default {
     },
     components:{
         Avatar,
+        ResourceAdaptation,
         LinkAdaptation,
         ImageAdaptation,
         CommentList,

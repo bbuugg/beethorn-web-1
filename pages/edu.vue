@@ -89,6 +89,280 @@
                         </div>
                     </a-col>
                 </a-row>
+                <div class="lanmu">
+                    <div class="lm-top">
+                        <div class="item">
+                            <div class="icon">
+                                <img src="/svg/edu/lm1.svg">
+                            </div>
+                            <div class="text-box">
+                                <div class="title-box">
+                                    <span class="title">教培圈子</span>
+                                    <span class="go" style="background-color: #ff6000;">go</span>
+                                </div>
+                                <div class="desc">
+                                    音乐老师交流圈
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="icon">
+                                <img src="/svg/edu/lm2.svg">
+                            </div>
+                            <div class="text-box">
+                                <div class="title-box">
+                                    <span class="title">教培圈子</span>
+                                    <span class="go" style="background-color: #ff6000;">go</span>
+                                </div>
+                                <div class="desc">
+                                    音乐老师交流圈
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="icon">
+                                <img src="/svg/edu/lm3.svg">
+                            </div>
+                            <div class="text-box">
+                                <div class="title-box">
+                                    <span class="title">教培圈子</span>
+                                    <span class="go" style="background-color: #ff6000;">go</span>
+                                </div>
+                                <div class="desc">
+                                    音乐老师交流圈
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="icon">
+                                <img src="/svg/edu/lm4.svg">
+                            </div>
+                            <div class="text-box">
+                                <div class="title-box">
+                                    <span class="title">教培圈子</span>
+                                    <span class="go" style="background-color: #ff6000;">go</span>
+                                </div>
+                                <div class="desc">
+                                    音乐老师交流圈
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="icon">
+                                <img src="/svg/edu/lm5.svg">
+                            </div>
+                            <div class="text-box">
+                                <div class="title-box">
+                                    <span class="title">教培圈子</span>
+                                    <span class="go" style="background-color: #ff6000;">go</span>
+                                </div>
+                                <div class="desc">
+                                    音乐老师交流圈
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="lm-block">
+                        <a-row :gutter="16"> 
+                            <a-col :span="4">
+                                <div class="item">
+                                    <div class="tag">
+                                        推荐
+                                    </div>
+                                    <div class="cover">
+                                        <img :src="info.cover" alt="">
+                                    </div>
+                                    <div class="title">
+                                        文章标题手动阀手动阀手动阀撒旦飞洒地方
+                                    </div>
+                                </div>
+                            </a-col>
+                            <a-col :span="4">
+                                <div class="item">
+                                    <div class="tag">
+                                        推荐
+                                    </div>
+                                    <div class="cover">
+                                        <img :src="info.cover" alt="">
+                                    </div>
+                                    <div class="title">
+                                        文章标题手动阀手动阀手动阀撒旦飞洒地方
+                                    </div>
+                                </div>
+                            </a-col>
+                            <a-col :span="4">
+                                <div class="item">
+                                    <div class="tag">
+                                        推荐
+                                    </div>
+                                    <div class="cover">
+                                        <img :src="info.cover" alt="">
+                                    </div>
+                                    <div class="title">
+                                        文章标题手动阀手动阀手动阀撒旦飞洒地方
+                                    </div>
+                                </div>
+                            </a-col>
+                            <a-col :span="4">
+                                <div class="item">
+                                    <div class="tag">
+                                        推荐
+                                    </div>
+                                    <div class="cover">
+                                        <img :src="info.cover" alt="">
+                                    </div>
+                                    <div class="title">
+                                        文章标题手动阀手动阀手动阀撒旦飞洒地方
+                                    </div>
+                                </div>
+                            </a-col>
+                            <a-col :span="4">
+                                <div class="item">
+                                    <div class="tag">
+                                        推荐
+                                    </div>
+                                    <div class="cover">
+                                        <img :src="info.cover" alt="">
+                                    </div>
+                                    <div class="title">
+                                        文章标题手动阀手动阀手动阀撒旦飞洒地方
+                                    </div>
+                                </div>
+                            </a-col>
+                            <a-col :span="4">
+                                <div class="item">
+                                    <div class="tag">
+                                        推荐
+                                    </div>
+                                    <div class="cover">
+                                        <img :src="info.cover" alt="">
+                                    </div>
+                                    <div class="title">
+                                        文章标题手动阀手动阀手动阀撒旦飞洒地方
+                                    </div>
+                                </div>
+                            </a-col>
+                        </a-row>
+                    </div>
+                </div>
+            </div>
+            <div class="cate-list-box">
+                <div class="text-box">
+                    <div class="text">
+                        电子竞技
+                    </div>
+                    <div class="cate-list">
+                        <div class="item">
+                            Apex
+                        </div>
+                        <div class="item">
+                            英雄联盟
+                        </div>
+                        <div class="item">
+                            守望先锋
+                        </div>
+                        <div class="item">
+                            全部
+                        </div>
+                    </div>
+                </div>
+                <a-row :gutter="[15,20]">
+                    <a-col :span="4">
+                        <div class="item">
+                            <listTwo :info="info"/>
+                        </div>
+                    </a-col>
+                    <a-col :span="4">
+                        <div class="item">
+                            <listTwo :info="info"/>
+                        </div>
+                    </a-col>
+                    <a-col :span="4">
+                        <div class="item">
+                            <listTwo :info="info"/>
+                        </div>
+                    </a-col>
+                    <a-col :span="4">
+                        <div class="item">
+                            <listTwo :info="info"/>
+                        </div>
+                    </a-col>
+                    <a-col :span="4">
+                        <div class="item">
+                            <listTwo :info="info"/>
+                        </div>
+                    </a-col>
+                    <a-col :span="4">
+                        <div class="item">
+                            <listTwo :info="info"/>
+                        </div>
+                    </a-col>
+                </a-row>
+                <div class="more-box">
+                    <div class="more-btn">
+                        加载更多
+                    </div>
+                </div>
+            </div>
+
+            <div class="cate-list-box">
+                <div class="text-box">
+                    <div class="text">
+                        电子竞技
+                    </div>
+                    <div class="cate-list">
+                        <div class="item">
+                            Apex
+                        </div>
+                        <div class="item">
+                            英雄联盟
+                        </div>
+                        <div class="item">
+                            守望先锋
+                        </div>
+                        <div class="item">
+                            全部
+                        </div>
+                    </div>
+                </div>
+                <a-row :gutter="[15,20]">
+                    <a-col :span="4">
+                        <div class="item">
+                            <listTwo :info="info"/>
+                        </div>
+                    </a-col>
+                    <a-col :span="4">
+                        <div class="item">
+                            <listTwo :info="info"/>
+                        </div>
+                    </a-col>
+                    <a-col :span="4">
+                        <div class="item">
+                            <listTwo :info="info"/>
+                        </div>
+                    </a-col>
+                    <a-col :span="4">
+                        <div class="item">
+                            <listTwo :info="info"/>
+                        </div>
+                    </a-col>
+                    <a-col :span="4">
+                        <div class="item">
+                            <listTwo :info="info"/>
+                        </div>
+                    </a-col>
+                    <a-col :span="4">
+                        <div class="item">
+                            <listTwo :info="info"/>
+                        </div>
+                    </a-col>
+                </a-row>
+                <div class="more-box">
+                    <div class="more-btn">
+                        加载更多
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -286,8 +560,8 @@ export default {
     min-height: 550px;
     display: flex;
     justify-content: center;
+   
     .swipe-box{
-        margin-bottom: 20px;
         .left{
             .swiper-container{
                 border-radius: 10px;
@@ -375,6 +649,165 @@ export default {
             }
             .sizedbox{
                 height: 20px;
+            }
+        }
+        .lanmu{
+            margin-top: 10px;
+            .lm-top{
+                display: flex;
+                justify-content: space-between;
+                .item{
+                    display: flex;
+                    align-items: center;
+                    .icon{
+                        width: 62px;
+                        height: 62px;
+                        margin-right: 12px;
+                        img{
+                            width: 100%;
+                            height: 100%;
+                        }
+                    }
+                    .text-box{
+                        .title-box{
+                            .title{
+                                font-size: 18px;
+                                font-weight: 600;
+                                font-family: "beethorn-zc";
+                            }
+                            .go{
+                                border-radius: 4px;
+                                color: #ffffff;
+                                font-size: 13px;
+                                font-weight: normal;
+                                padding: 2px 5px;
+                                position: absolute;
+                                line-height: 15px;
+                                margin-left: 5px;
+                                cursor: pointer;
+                                text-transform: uppercase;
+                                vertical-align: middle;
+                            }
+                        }
+                        .desc{
+                            margin-top: 5px;
+                            font-size: 14px;
+                            color: #8e8e8e;
+                        }
+                    } 
+                }
+            }
+            .lm-block{
+                margin-top: 20px;
+                .item{
+                    position: relative;
+                  
+                    cursor: pointer;
+                    border-radius: 4px;
+                    overflow: hidden;
+                    .cover{
+                        border-radius: 4px;
+                        overflow: hidden;
+                        img{
+                            object-fit: cover;
+                            border-radius: 4px;
+                            width: 100%;
+                            height: 120px;
+                            transition: transform 0.2s ease-out;
+                        }
+                    }
+                    .title{
+                        width: 185px;
+                        font-size: 14px;
+                        color: #555555;
+                        line-height: 20px;
+                        letter-spacing: 0.5px;
+                        text-align: center;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        margin-top: 10px;
+                    }
+                    .tag{
+                        background-color: #ff2a8e;
+                        position: absolute;          
+                        top: 5px;
+                        right: -60px;
+                        z-index: 1;
+                        width: 150px;
+                        height: 22px;
+                        color: #fff;
+                        line-height: 25px;
+                        -webkit-transform: rotate(45deg);
+                        transform: rotate(45deg);
+                        text-align: center;
+                        font-size: 12px;
+                    }
+                }
+                .item:hover{
+                    .cover{
+                        img{
+                            transform: scale(1.2);
+                        }
+                    }
+                    .title{
+                        color: #E98469;
+                    }
+                }
+            }
+        }
+    }
+    .cate-list-box{
+        margin-top: 30px;
+        .text-box{
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .text{
+                font-size: 24px;
+                font-weight: 600;
+                font-family: "beethorn-zc";
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+                overflow: hidden;
+            }
+            .cate-list{
+                display: flex;
+                .item{
+                    user-select: none;
+                    cursor: pointer;
+                    display: inline-block;
+                    padding: 10px 20px;
+                    margin-left: 20px;
+                    color: #8590A6;
+                    font-weight: 600;
+                    border-radius: 8px;
+                    background-color: #f5f6f7;
+                }
+                .item:hover{
+                    color: white;
+                    background-color: #f89c40;
+                }
+            }
+            
+        }
+        .more-box{
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            .more-btn{
+                user-select: none;
+                cursor: pointer;
+                display: inline-block;
+                padding: 10px 20px;
+                margin-left: 20px;
+                color: #8590A6;
+                font-weight: 600;
+                border-radius: 8px;
+                background-color: #f5f6f7;
             }
         }
     }

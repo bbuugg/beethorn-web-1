@@ -47,9 +47,8 @@ export const actions = {
         // 初始化token到里面
         let token = $cookies.get("Beethorn-token") ? $cookies.get("Beethorn-token") : null
 
-            
         commit("user/M_UPDATE_TOKEN",token)
-        if (token != null) {
+        if (token != null && token != "") {
             const res = await $axios.get(api.getAccountInfo)
             commit("user/M_UPDATE_USER",res.data.info)
             

@@ -130,20 +130,27 @@
                             />
                         </div>
                     </div>
-                    <div v-if="feedMetaOptions.resourceVisible" class="create-meta auth">
-                        <a-button type="dashed" block>
+                    <div v-if="feedMetaOptions.resourceVisible" class="create-meta resource">
+                        <a-button type="dashed" @click="addResource" v-if="createForm.resourceList.length == 0" block>
                             添加资源
                         </a-button>
-                        <div class="resource-list">
-                            <div class="resource-item">
-                                <div class="link-input">
-
-                                </div>
-                                <div class="pass-input">
-
+                        <div class="resource-list"  v-if="createForm.resourceList.length > 0">
+                            <div class="item" v-for="(item,index) in createForm.resourceList" :key="index">
+                                <div class="input">
+                                    <a-row :gutter="16">
+                                        <a-col :span="18">
+                                            <a-input v-model="item.link" placeholder="请输入链接" />
+                                        </a-col>
+                                        <a-col :span="6">
+                                            <a-input v-model="item.pass" placeholder="请输入密码" />
+                                        </a-col>
+                                    </a-row>
                                 </div>
                                 <div class="add-btn">
-
+                                    <a-button-group>
+                                        <a-button @click="addResource" type="primary" icon="plus" />
+                                        <a-button  @click="removeResource(index)" icon="minus" />
+                                    </a-button-group>
                                 </div>
                             </div>
                         </div>
@@ -164,13 +171,14 @@
                 <div class="create-footer">
                     <ul class="create-footer-l">
                         <li @click="selectImg" class="create-footer-l-item">
-                            <a-icon theme="filled" type="file-image" />
+                            <!-- <a-icon theme="filled" type="file-image" /> -->
+                            <f-icon type="io-tupian" :size="25"></f-icon>
                             <span>图片</span>
                         </li>
-                        <!-- <li @click="selectResource" class="create-footer-l-item">
-                            <a-icon theme="filled" type="file-zip" />
+                        <li @click="selectResource" class="create-footer-l-item">
+                            <f-icon type="io-ziyuan-resources" :size="25"></f-icon>
                             <span>资源</span>
-                        </li> -->
+                        </li>
                         <!-- <li class="create-footer-l-item">
                             <a-icon type="video-camera" @click="selectVideo"/>
                         </li> -->
@@ -261,7 +269,7 @@ import SidebarHotUserList from "@/components/sidebar/sidebarHotUserList"
 import SidebarUserInfo from "@/components/sidebar/sidebarUserInfo"
 import SidebarClockIn from "@/components/sidebar/sidebarClockIn"
 import SidbarAdv from "@/components/sidebar/sidbarAdv"
-
+import FIcon from '@/components/icon/FIcon'
 // import TopicEdior from "@/components/editor/topicEdior"
 
 import api from "@/api/index"
@@ -304,6 +312,7 @@ export default {
     },
     components:{
         // TopicEdior,
+        FIcon,
         FeedItem,
         SidebarHotUserList,
         SidebarHotTopic,
@@ -324,6 +333,7 @@ export default {
             createForm:{
                 titleCount:0,
                 imgList:[],
+                resourceList:[],
                 groupInfo:null,
                 title:"",
                 content:"",
@@ -388,6 +398,7 @@ export default {
                 content:this.createForm.content,
                 type:this.createForm.type,
                 images:"",
+                resources:"",
                 groupId:this.createForm.groupInfo.id,
                 hideMode: this.createForm.hideMode,
                 price: this.createForm.price,
@@ -396,9 +407,11 @@ export default {
             if (this.createForm.imgList.length > 0 && this.createForm.video == null) {
                 formData.images = JSON.stringify(this.createForm.imgList)
             }
+            if (this.createForm.resourceList.length > 0) {
+                formData.resources = JSON.stringify(this.createForm.resourceList)
+            }
 
-            try {
-                let res = await this.$axios.post(api.postTopicCreate,formData)
+            let res = await this.$axios.post(api.postTopicCreate,formData)
                 if (res.code != 1) {
                     this.$message.error(
                         res.message,
@@ -412,12 +425,14 @@ export default {
                 )
                
                 this.createForm.imgList = []
+                this.createForm.resourceList = []
                 this.createForm.groupInfo = null
                 this.createForm.title = ""
                 this.createForm.content = ""
                 this.createForm.video = null
                 this.isOpenEmoji = false
                 this.feedMetaOptions.imgVisible = false
+                this.feedMetaOptions.resourceVisible = false
                 this.feedMetaOptions.videoVisible = false
                 this.createForm.titleCount = 0
                 this.createForm.hideMode = 1
@@ -425,15 +440,6 @@ export default {
 
 
                 this.$emit("resetList")
-            } catch (error) {
-                console.log(error)
-                setTimeout(() => {
-                    this.$notification.error({
-                        message: '网络错误',
-                        description: "请稍后再试"
-                    })
-                }, 1000)
-            }
         },
         // 登录
         postLogin(){
@@ -544,7 +550,27 @@ export default {
         selectResource(){
             this.feedMetaOptions.resourceVisible = !this.feedMetaOptions.resourceVisible
         },
+        addResource(){
+            const tmp = {
+                link:"",
+                pass:"",
+            }
+            if (this.createForm.resourceList.length > 2) {
+                this.$message.error(
+                    "只能设置3个资源地址",
+                    3
+                )
+                return
+            }
+            this.createForm.resourceList.push(tmp)
+        },
         // ---------- 删除
+        removeResource(i){
+            this.createForm.resourceList.splice(i,1)
+            if (this.createForm.resourceList.length == 0) {
+                this.feedMetaOptions.resourceVisible = false
+            }
+        },
         removeImg(i){
             this.createForm.imgList.splice(i,1)
             if (this.createForm.imgList.length == 0) {
@@ -808,6 +834,18 @@ export default {
                         }
                     }
                 }
+                .resource{
+                    .resource-list{
+                        .item{
+                            margin-bottom: 10px;
+                            display: flex;
+                            .input{
+                                flex: 1;
+                                margin-right: 30px;
+                            }
+                        }
+                    }
+                }
                 .video{
                     padding: 5px;
                     ul{
@@ -882,12 +920,16 @@ export default {
                     display: flex;
                     align-items: center;
                     .create-footer-l-item{
+                        display: flex;
+                        align-items: center;
                         font-size: 25px;
                         font-weight: 600;
                         margin-right: 20px;
                         cursor: pointer;
                         user-select: none;
                         span{
+                            line-height: 25px;
+                            margin-left: 6px;
                             font-size: 14px;
                         }
                     }

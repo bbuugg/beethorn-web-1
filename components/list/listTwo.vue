@@ -73,6 +73,7 @@
             width: 100%;
             height: 100%;
             img{
+                object-fit: cover;
                 border-top-right-radius: 8px;
                 border-top-left-radius: 8px;
                 display: block;

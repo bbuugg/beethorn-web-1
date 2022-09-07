@@ -127,6 +127,10 @@ export default {
                     if (item.type == 1 && item.images != "") {
                         item.images = JSON.parse(item.images)
                     }
+
+                    if (item.resources != "") {
+                        item.resources = JSON.parse(item.resources)
+                    }
                 }
 
                 // 重制表情标题内容

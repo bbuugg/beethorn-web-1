@@ -8,7 +8,6 @@
                     <!-- 标题 -->
                     <h2>登录</h2>
     
-                    <!-- 注册框 -->
                     <a-form-model 
                     ref="loginForm" 
                     :model="loginForm" 
@@ -87,7 +86,7 @@ export default {
                 content: "发送验证码",
                 timer: null,
                 account:null,
-                mode: LOGINMODE.CODE,
+                mode: LOGINMODE.PASS,
                 code:null,
                 password:null,
                 rules:{

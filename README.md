@@ -33,7 +33,7 @@
 
 后台仓库git：https://github.com/EForinaJ/beethorn-admin
 
-服务端仓库git：https://github.com/EForinaJ/beethorn-serve
+<!-- 服务端仓库git：https://github.com/EForinaJ/beethorn-serve -->
 
 ## 演示地址
 

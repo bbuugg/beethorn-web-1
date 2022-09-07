@@ -50,10 +50,10 @@
                             会员价格{{base.currencySymbol}} {{vipPrice}}
                             </div>
                             <a-button @click="pay" type="danger" ghost>
-                                支付
+                                {{info.hideMode | resetText}}
                             </a-button>
                         </div>
-                        <div class="feed-centet">
+                        <div class="feed-centet" v-if="info.hideMode == HIDEMODE.PUBLIC || info.isView">
                             <div class="content" v-html="info.content"></div>
                             
                             <!-- 图片 -->
@@ -64,6 +64,11 @@
                             <!-- 链接 -->
                             <div v-if="info.relatedInfo.module != ''&&info.relatedInfo.id != 0">
                                 <LinkAdaptation :info="info.relatedInfo"/>
+                            </div>
+
+                            <!-- 资源 -->
+                            <div v-if="info.resources.length != ''">
+                                <ResourceAdaptation :list="info.resources"/>
                             </div>
                         </div>
                         <div class="feed-bottom">
@@ -120,6 +125,7 @@
 
 
 <script>
+import ResourceAdaptation from "@/components/adaptation/resource"
 import LinkAdaptation from "@/components/adaptation/link"
 import ImageAdaptation from "@/components/adaptation/image"
 import Avatar from "@/components/avatar/avatar"
@@ -149,6 +155,7 @@ export default {
         },
     },
     components:{
+        ResourceAdaptation,
         LinkAdaptation,
         ImageAdaptation,
         Avatar,
@@ -178,6 +185,9 @@ export default {
         }
         if (res.data.info.type == 1 && res.data.info.images != "") {
             res.data.info.images = JSON.parse(res.data.info.images)
+        }
+        if (res.data.info.resources != "") {
+            res.data.info.resources = JSON.parse(res.data.info.resources)
         }
 
         let num = res.data.info.content.match(/:{.*?}/g)

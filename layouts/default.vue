@@ -55,24 +55,24 @@
                       文章
                     </nuxt-link>
                   </li>
-                  <li class="item">
+                  <!-- <li class="item">
                     <nuxt-link :class="selectedKeys[0] == '/discover' ? 'active' : ''" class="link" :to="`/discover`">
                       发现
                     </nuxt-link>
-                  </li>
+                  </li> -->
                   <li class="item">
                     <nuxt-link :class="selectedKeys[0] == '/video' ? 'active' : ''" class="link" :to="`/video`">
                       视频
                     </nuxt-link>
                   </li>
-                  <li class="item">
+                  <!-- <li class="item">
                     <nuxt-link :class="selectedKeys[0] == '/audio' ? 'active' : ''" class="link" :to="`/audio`">
                       音频
                     </nuxt-link>
-                  </li>
+                  </li> -->
                   <li class="item">
                     <nuxt-link :class="selectedKeys[0] == '/edu' ? 'active' : ''" class="link" :to="`/edu`">
-                      学习
+                      课程
                     </nuxt-link>
                   </li>
                   <!-- <li class="item">
@@ -228,7 +228,7 @@ export default {
               return
           }
           this.M_UPDATE_TOKEN(null)
-          this.$cookies.remove("Bertorn-token")
+          this.$cookies.remove("Beethorn-token")
         },
         toRegister(){
             this.$Auth("register","用户注册","立即注册")
